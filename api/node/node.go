@@ -1,10 +1,11 @@
 package node
 
 import (
-	"fmt"
+	"bufio"
 	"io"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 const (
@@ -16,17 +17,30 @@ const (
 )
 
 type Instance struct {
+	Root        string
 	ProcessArgs []string
 
 	state          int
 	Cmd            *exec.Cmd
 	CommandInPipe  io.Writer
 	CommandOutPipe io.ReadCloser
+	handles        []func(HandleEvent)
 }
 
-func (i *Instance) runProcess() error {
+func New(root string, args ...string) *Instance {
+	node := &Instance{
+		ProcessArgs: args,
+		Root:        root,
+	}
+	node.init()
+	return node
+}
+
+func (i *Instance) init() error {
 	cmd := exec.Command(i.ProcessArgs[0], i.ProcessArgs[1:]...)
+	cmd.Dir = i.Root
 	cmd.Env = os.Environ()
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	i.Cmd = cmd
 	stdout, err := cmd.StdoutPipe()
@@ -45,21 +59,42 @@ func (i *Instance) runProcess() error {
 }
 
 func (i *Instance) Run() error {
-	if err := i.runProcess(); err != nil {
+	i.SetState(STATE_STARTING)
+	if err := i.init(); err != nil {
 		return err
 	}
 
-	// i.Cmd.Stdout = os.Stdout
-	// i.Cmd.Stdin = os.Stdin
-
 	go func() {
-		i.Cmd.Wait()
-		i.SetState(STATE_STOP)
+		buf := bufio.NewScanner(i.CommandOutPipe)
+		for buf.Scan() {
+			i.Dispatch(HandleEvent{Name: MessageEvent, Data: buf.Text()}) // call `MessageEvent`
+		}
 	}()
 
-	i.Cmd.Start()
+	if err := i.Cmd.Start(); err != nil {
+		i.SetState(STATE_STOP)
+		return err
+	} else {
+		i.SetState(STATE_RUNNING)
+	}
+
+	err := i.Cmd.Wait()
+	i.SetState(STATE_STOP)
+	if err != nil {
+		return err
+	}
 
 	return nil
+}
+
+func (i *Instance) Stop() error {
+	i.SetState(STATE_STOPPING)
+	return i.Cmd.Process.Signal(os.Interrupt)
+}
+
+func (i *Instance) Kill() error {
+	i.SetState(STATE_STOP)
+	return i.Cmd.Process.Kill()
 }
 
 func (i *Instance) State() int {
@@ -67,8 +102,6 @@ func (i *Instance) State() int {
 }
 
 func (i *Instance) SetState(state int) {
-	if state == STATE_STOP {
-		fmt.Println("\033[31mServer stopped\033[0m")
-	}
 	i.state = state
+	i.Dispatch(HandleEvent{Name: StateEvent, Data: i.state}) // call `StateEvent`
 }
