@@ -1,8 +1,6 @@
 package database
 
-type Instance struct{}
+import "github.com/a3510377/control-panel/models"
 
-func (db *DB) CreateInstance() error {
-	// return db.Db.Create().Error
-	return nil
+func (db *DB) GetInstance(models.Instance) {
 }
