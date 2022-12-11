@@ -1,3 +1,8 @@
+// id summon
+// 111111111111111111111111111111111111111111 111111111111
+// 54                                      13 12         0
+//                           timestamp(42bit)  step(12bit)
+
 package service
 
 import (
@@ -13,24 +18,18 @@ const (
 	MaxStep   = 1 << TimeShift
 )
 
-// 111111111111111111111111111111111111111111 111111111111
-// 54                                      13 12         0
-//                           timestamp(42bit)  step(12bit)
-
-type (
-	ID       int64
-	SummonID struct {
-		mu    sync.Mutex
-		time  int64
-		step  int64
-		Epoch time.Time
-	}
-)
+type SummonID struct {
+	mu    sync.Mutex
+	time  int64
+	step  int64
+	Epoch time.Time
+}
 
 func NewSummonID() *SummonID {
 	return &SummonID{
 		Epoch: time.Unix(Epoch/1e3, (Epoch%1e3)*1e6),
 		mu:    sync.Mutex{},
+		step:  0,
 	}
 }
 
@@ -49,30 +48,21 @@ func (s *SummonID) Generate() ID {
 	} else {
 		s.step = 0
 	}
+	s.time = now
 
 	return ID((now << TimeShift) | s.step)
 }
 
-func (f ID) Int64() int64 {
-	return int64(f)
-}
+// ID is a 54-bit ID.
+type ID int64
 
-func (f ID) String() string {
-	return strconv.FormatInt(int64(f), 10)
-}
+func (f ID) Int64() int64   { return int64(f) }
+func (f ID) String() string { return strconv.FormatInt(int64(f), 10) }
+func (f ID) Base2() string  { return strconv.FormatInt(int64(f), 2) }
+func (f ID) Bytes() []byte  { return []byte(f.String()) }
+func (f ID) Base64() string { return base64.StdEncoding.EncodeToString(f.Bytes()) }
 
-func (f ID) Base2() string {
-	return strconv.FormatInt(int64(f), 2)
-}
-
-func (f ID) Bytes() []byte {
-	return []byte(f.String())
-}
-
-func (f ID) Base64() string {
-	return base64.StdEncoding.EncodeToString(f.Bytes())
-}
-
-func (f ID) Time() int64 {
-	return (int64(f) >> TimeShift) + Epoch
+func (f ID) Time() time.Time {
+	t := (int64(f) >> TimeShift) + Epoch
+	return time.Unix(t/1e3, (t%1e3)*1e6)
 }
