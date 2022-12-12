@@ -21,7 +21,11 @@ func main() {
 	// 	Tags: []models.InstanceTags{{Name: "awa"}},
 	// }))
 	// data := &models.Instance{ID: 3864821731328, Name: "\"; DROP TABLE instance_tags; --"}
-	fmt.Println(db.GetInstanceByID(id.ID(0)))
+	// fmt.Println()
+	if data := db.GetInstanceByID(id.ID(4179686260736)); data != nil {
+		fmt.Println(data.EndAt)
+		fmt.Println(data.ClearEndAt())
+	}
 	// db.Model(&models.Instance{}).Association("Tags").Append(&models.InstanceTags{Name: "awa"})
 	// fmt.Println(data)
 }
