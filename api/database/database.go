@@ -22,7 +22,7 @@ func NewDB(filename string) (*DB, error) {
 	db.Config.Logger = dbLogger
 
 	// Instance
-	db.AutoMigrate(&models.Instance{}, &models.InstanceTags{})
+	db.AutoMigrate(&models.Instance{}, &models.Tags{})
 
 	return &DB{db}, err
 }
