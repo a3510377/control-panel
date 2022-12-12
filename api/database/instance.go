@@ -3,6 +3,7 @@ package database
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
@@ -72,8 +73,51 @@ func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []DBInstance 
 	return ModelInstancesToDBInstances(db, instances)
 }
 
-// func (i *DBInstance) GetNow()       { i.Instance = *i.Db.getInstanceByID(i.ID) }
-// func (i *DBInstance) Save() error   { return i.Db.Save(&i.Instance).Error }
-// func (i *DBInstance) Get() *gorm.DB { return i.Db.Model(&models.Instance{}).Where("id = ?", i.ID) }
+/* DBInstance */
+func (i *DBInstance) GetNow()       { i.Instance = *i.Db.getInstanceByID(i.ID) }
+func (i *DBInstance) Get() *gorm.DB { return i.Db.Model(&models.Instance{}).Where("id = ?", i.ID) }
 
-// func (i *DBInstance) SetNull(key string) error { return i.Get().Update(key, gorm.Expr("NULL")).Error }
+func (i *DBInstance) SetNull(key string) error { return i.Get().Update(key, gorm.Expr("NULL")).Error }
+
+// Tags []Tags `gorm:"many2many:instanceTags;foreignKey:ID;References:ID"` // 標籤
+
+func (i *DBInstance) SetName(name string) error       { return i.Get().Update("name", name).Error }
+func (i *DBInstance) SetRootDir(root string) error    { return i.Get().Update("RootDir", root).Error }
+func (i *DBInstance) SetType(Type string) error       { return i.Get().Update("RootDir", Type).Error }
+func (i *DBInstance) SetLastTime(cmd string) error    { return i.Get().Update("LastTime", cmd).Error }
+func (i *DBInstance) SetEndAt(time time.Time) error   { return i.Get().Update("EndAt", time).Error }
+func (i *DBInstance) ClearEndAt(time time.Time) error { return i.SetNull("EndAt") }
+
+func (i *DBInstance) SetStartCommand(cmd string) error {
+	return i.Get().Update("StartCommand", cmd).Error
+}
+
+func (i *DBInstance) SetStopCommand(cmd string) error {
+	return i.Get().Update("StopCommand", cmd).Error
+}
+
+func (i *DBInstance) GetTags() []string {
+	tags, strTags := []models.Tags{}, []string{}
+
+	i.Get().Association("Tags").Append(&tags)
+	for _, tag := range tags {
+		strTags = append(strTags, tag.Name)
+	}
+
+	return strTags
+}
+
+func (i *DBInstance) AddTag(tags ...string) {
+	// TODO check not in tags
+	tagsList := []models.Tags{}
+
+	for _, tag := range tags {
+		tagsList = append(tagsList, models.Tags{Name: tag})
+	}
+
+	i.Get().Association("Tags").Append(tagsList)
+}
+
+func (i *DBInstance) RemoveTag(tag string) {
+	i.Get().Association("Tags").Delete(&models.Tags{Name: tag})
+}
