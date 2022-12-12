@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/a3510377/control-panel/database"
+	"github.com/a3510377/control-panel/service/id"
 )
 
 type Test struct {
@@ -20,7 +21,7 @@ func main() {
 	// 	Tags: []models.InstanceTags{{Name: "awa"}},
 	// }))
 	// data := &models.Instance{ID: 3864821731328, Name: "\"; DROP TABLE instance_tags; --"}
-	fmt.Println(db.GetInstanceByTags("a"))
+	fmt.Println(db.GetInstanceByID(id.ID(0)))
 	// db.Model(&models.Instance{}).Association("Tags").Append(&models.InstanceTags{Name: "awa"})
 	// fmt.Println(data)
 }

@@ -4,31 +4,18 @@ import (
 	"errors"
 
 	"github.com/a3510377/control-panel/models"
+	"github.com/a3510377/control-panel/service/id"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
-func (db *DB) GetInstance(data *models.Instance) (*models.Instance, error) {
-	result, error := db.FirstInstance(data)
-	if error != nil {
-		return nil, error
+func (db *DB) GetInstanceByID(id id.ID) *models.Instance {
+	instance := &models.Instance{}
+
+	if err := db.Where("id = ?", id).First(instance).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
 	}
 
-	return result, nil
-}
-
-func (db *DB) FindInstance(data *models.Instance) (*models.Instance, error) {
-	result := db.Preload(clause.Associations).Find(data)
-
-	return data, result.Error
-}
-
-func (db *DB) FirstInstance(data *models.Instance) (*models.Instance, error) {
-	err := db.Preload(clause.Associations).First(data, data).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
-	return data, err
+	return instance
 }
 
 func (db *DB) GetInstanceTagsByName(name ...string) []int {
