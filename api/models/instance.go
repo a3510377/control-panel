@@ -21,8 +21,8 @@ type Instance struct {
 }
 
 type InstanceTags struct {
-	ID   int    `gorm:"primarykey"`
-	Name string `gorm:"size:15;not null"`
+	ID   int    `json:"id"  gorm:"primarykey"`
+	Name string `json:"name" gorm:"size:15;not null"`
 }
 
 func NewInstance() *Instance {
