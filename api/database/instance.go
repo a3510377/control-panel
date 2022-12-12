@@ -9,14 +9,27 @@ import (
 	"gorm.io/gorm"
 )
 
-func (db *DB) GetInstanceByID(id id.ID) *models.Instance {
-	instance := &models.Instance{}
+type DBInstance struct {
+	Db *DB
+	models.Instance
+}
 
-	if err := db.Where("id = ?", id).First(instance).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+func ModelInstancesToDBInstances(db *DB, instances []models.Instance) []DBInstance {
+	dbInstances := []DBInstance{}
+	for _, instance := range instances {
+		dbInstances = append(dbInstances, DBInstance{db, instance})
+	}
+	return dbInstances
+}
+
+func (db *DB) GetInstanceByID(id id.ID) *DBInstance {
+	instance := models.Instance{}
+
+	if err := db.Where("id = ?", id).First(&instance).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
 
-	return instance
+	return &DBInstance{db, instance}
 }
 
 func (db *DB) GetInstanceTagsByName(name ...string) []int {
@@ -34,18 +47,18 @@ func (db *DB) getInstanceByTags(tags ...string) *gorm.DB {
 	return db.Where("id IN ?", db.GetInstanceTagsByName(tags...))
 }
 
-func (db *DB) GetInstanceByTags(tags ...string) []models.Instance {
+func (db *DB) GetInstanceByTags(tags ...string) []DBInstance {
 	instances := []models.Instance{}
 
 	db.getInstanceByTags(tags...).Find(&instances)
 
-	return instances
+	return ModelInstancesToDBInstances(db, instances)
 }
 
-func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []models.Instance {
+func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []DBInstance {
 	instances := []models.Instance{}
 
 	db.getInstanceByTags(tags...).Where("name LIKE ?", fmt.Sprintf("%v%%", name)).Find(&instances)
 
-	return instances
+	return ModelInstancesToDBInstances(db, instances)
 }
