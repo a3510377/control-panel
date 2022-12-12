@@ -1,15 +1,25 @@
 package database
 
 import (
+	"log"
+	"os"
+
 	"github.com/a3510377/control-panel/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type DB struct{ *gorm.DB }
 
 func NewDB(filename string) (*DB, error) {
 	db, err := connect()
+
+	dbLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+		LogLevel: logger.Info,
+		Colorful: false,
+	})
+	db.Config.Logger = dbLogger
 
 	// Instance
 	db.AutoMigrate(&models.Instance{}, &models.InstanceTags{})

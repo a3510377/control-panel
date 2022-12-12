@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/a3510377/control-panel/database"
-	"github.com/a3510377/control-panel/models"
 )
 
 type Test struct {
@@ -20,7 +19,8 @@ func main() {
 	// 	Name: "test",
 	// 	Tags: []models.InstanceTags{{Name: "awa"}},
 	// }))
-	data := &models.Instance{}
-	db.Preload("Tags").Find(data)
-	fmt.Println(data)
+	// data := &models.Instance{ID: 3864821731328, Name: "\"; DROP TABLE instance_tags; --"}
+	fmt.Println(db.GetInstanceByTags("a"))
+	// db.Model(&models.Instance{}).Association("Tags").Append(&models.InstanceTags{Name: "awa"})
+	// fmt.Println(data)
 }
