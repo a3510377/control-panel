@@ -75,26 +75,24 @@ func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []DBInstance 
 }
 
 /* DBInstance */
-func (i *DBInstance) GetNow()       { i.Instance = *i.Db.getInstanceByID(i.ID) }
-func (i *DBInstance) Get() *gorm.DB { return i.Db.Model(&models.Instance{ID: i.ID}) }
+func (i *DBInstance) GetNow()                                  { i.Instance = *i.Db.getInstanceByID(i.ID) }
+func (i *DBInstance) Get() *gorm.DB                            { return i.Db.Model(&models.Instance{ID: i.ID}) }
+func (i *DBInstance) Model() *models.Instance                  { return &models.Instance{ID: i.ID} }
+func (i *DBInstance) Delete() error                            { return i.Db.Delete(i.Model()).Error }
+func (i *DBInstance) Update(column string, value any) *gorm.DB { return i.Get().Update(column, value) }
+func (i *DBInstance) SetNull(key string) error                 { return i.Update(key, gorm.Expr("NULL")).Error }
 
-func (i *DBInstance) SetNull(key string) error { return i.Get().Update(key, gorm.Expr("NULL")).Error }
+func (i *DBInstance) SetName(name string) error        { return i.Update("name", name).Error }
+func (i *DBInstance) SetRootDir(root string) error     { return i.Update("RootDir", root).Error }
+func (i *DBInstance) SetType(Type string) error        { return i.Update("RootDir", Type).Error }
+func (i *DBInstance) SetLastTime(cmd string) error     { return i.Update("LastTime", cmd).Error }
+func (i *DBInstance) SetEndAt(time time.Time) error    { return i.Update("EndAt", time).Error }
+func (i *DBInstance) SetStartCommand(cmd string) error { return i.Update("StartCommand", cmd).Error }
+func (i *DBInstance) SetStopCommand(cmd string) error  { return i.Update("StopCommand", cmd).Error }
+func (i *DBInstance) ClearEndAt(time time.Time) error  { return i.SetNull("EndAt") }
 
-// Tags []Tags `gorm:"many2many:instanceTags;foreignKey:ID;References:ID"` // 標籤
-
-func (i *DBInstance) SetName(name string) error       { return i.Get().Update("name", name).Error }
-func (i *DBInstance) SetRootDir(root string) error    { return i.Get().Update("RootDir", root).Error }
-func (i *DBInstance) SetType(Type string) error       { return i.Get().Update("RootDir", Type).Error }
-func (i *DBInstance) SetLastTime(cmd string) error    { return i.Get().Update("LastTime", cmd).Error }
-func (i *DBInstance) SetEndAt(time time.Time) error   { return i.Get().Update("EndAt", time).Error }
-func (i *DBInstance) ClearEndAt(time time.Time) error { return i.SetNull("EndAt") }
-
-func (i *DBInstance) SetStartCommand(cmd string) error {
-	return i.Get().Update("StartCommand", cmd).Error
-}
-
-func (i *DBInstance) SetStopCommand(cmd string) error {
-	return i.Get().Update("StopCommand", cmd).Error
+func (i *DBInstance) Updates(values any) *gorm.DB {
+	return i.Get().Omit("ID").Omit("CreatedAt").Updates(values)
 }
 
 func (i *DBInstance) GetTags() []string {

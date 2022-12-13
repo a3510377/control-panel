@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/a3510377/control-panel/database"
+	"github.com/a3510377/control-panel/models"
 	bID "github.com/a3510377/control-panel/service/id"
 	"github.com/gin-gonic/gin"
 )
@@ -31,6 +32,22 @@ func AddHandler(db *database.DB, app *gin.RouterGroup) {
 		c.JSON(http.StatusOK, data.Instance)
 	})
 
-	instancePath.POST("/updata", func(c *gin.Context) {
+	instancePath.PATCH("/", func(c *gin.Context) {
+		data := c.MustGet(instanceDataKey).(*database.DBInstance)
+		newInstance := models.NewInstance()
+
+		c.BindJSON(&newInstance)
+		data.Updates(newInstance)
+		data.GetNow()
+	})
+
+	instancePath.DELETE("/", func(c *gin.Context) {
+		data := c.MustGet(instanceDataKey).(*database.DBInstance)
+		if err := data.Delete(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "instance deleted error"})
+			// TODO add error log
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "instance deleted"})
 	})
 }
