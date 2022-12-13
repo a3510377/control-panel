@@ -20,6 +20,12 @@ const (
 	IDBit     = 54
 )
 
+var GlobalIDMake *SummonID
+
+func init() {
+	GlobalIDMake = NewSummonID()
+}
+
 type SummonID struct {
 	mu    sync.Mutex
 	time  int64
