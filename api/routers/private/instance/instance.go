@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/a3510377/control-panel/database"
-	"github.com/a3510377/control-panel/models"
 	bID "github.com/a3510377/control-panel/service/id"
 	"github.com/gin-gonic/gin"
 )
@@ -33,12 +32,12 @@ func AddHandler(db *database.DB, app *gin.RouterGroup) {
 	})
 
 	instancePath.PATCH("/", func(c *gin.Context) {
+		var newInstance map[string]any
+
 		data := c.MustGet(instanceDataKey).(*database.DBInstance)
-		newInstance := models.NewInstance()
 
 		c.BindJSON(&newInstance)
 		data.Updates(newInstance)
-		data.GetNow()
 	})
 
 	instancePath.DELETE("/", func(c *gin.Context) {
