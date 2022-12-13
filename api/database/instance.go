@@ -7,6 +7,7 @@ import (
 
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
+	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -75,7 +76,7 @@ func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []DBInstance 
 
 /* DBInstance */
 func (i *DBInstance) GetNow()       { i.Instance = *i.Db.getInstanceByID(i.ID) }
-func (i *DBInstance) Get() *gorm.DB { return i.Db.Model(&models.Instance{}).Where("id = ?", i.ID) }
+func (i *DBInstance) Get() *gorm.DB { return i.Db.Model(&models.Instance{ID: i.ID}) }
 
 func (i *DBInstance) SetNull(key string) error { return i.Get().Update(key, gorm.Expr("NULL")).Error }
 
@@ -99,7 +100,7 @@ func (i *DBInstance) SetStopCommand(cmd string) error {
 func (i *DBInstance) GetTags() []string {
 	tags, strTags := []models.Tags{}, []string{}
 
-	i.Get().Association("Tags").Append(&tags)
+	i.Get().Association("Tags").Find(&tags)
 	for _, tag := range tags {
 		strTags = append(strTags, tag.Name)
 	}
@@ -108,10 +109,13 @@ func (i *DBInstance) GetTags() []string {
 }
 
 func (i *DBInstance) AddTag(tags ...string) {
-	// TODO check not in tags
 	tagsList := []models.Tags{}
+	oldTags := i.GetTags()
 
 	for _, tag := range tags {
+		if slices.Contains(oldTags, tag) {
+			continue
+		}
 		tagsList = append(tagsList, models.Tags{Name: tag})
 	}
 

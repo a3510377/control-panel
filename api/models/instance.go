@@ -18,7 +18,7 @@ type Instance struct {
 	LastTime     time.Time `json:"last_time" gorm:"default:null"` // 最後一次啟動時間
 	EndAt        time.Time `json:"end_time" gorm:"default:null"`  // 到期時間
 
-	Tags []Tags `gorm:"many2many:instanceTags;foreignKey:ID;References:ID"` // 標籤
+	Tags []Tags `gorm:"many2many:instanceTags"` // 標籤
 }
 
 type Tags struct {
