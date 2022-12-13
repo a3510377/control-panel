@@ -1,6 +1,8 @@
 package start
 
 import (
+	"github.com/a3510377/control-panel/database"
+	"github.com/a3510377/control-panel/server"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +13,8 @@ func NewCommand() *cobra.Command {
 		Long:  "This command starts the control plane.",
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
-			// TODO: Start the control plane
+			db, _ := database.NewDB("test.db")
+			server.New().Start(db)
 		},
 	}
 }

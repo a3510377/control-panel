@@ -68,3 +68,13 @@ func (f ID) Time() time.Time {
 	t := (int64(f) >> TimeShift) + Epoch
 	return time.Unix(t/1e3, (t%1e3)*1e6)
 }
+
+// string to ID
+// if error return `-1`
+func StringToID(s string) ID {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		return -1
+	}
+	return ID(i)
+}

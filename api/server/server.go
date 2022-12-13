@@ -8,21 +8,24 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/a3510377/control-panel/database"
 	"github.com/a3510377/control-panel/routers"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct{}
 
-func (s *Server) Start() {
+func New() *Server { return &Server{} }
+
+func (s *Server) Start(db *database.DB) {
 	gin.SetMode("release")
 	gin.ForceConsoleColor()
 
-	routers.Routers()
+	router := routers.Routers(db)
 
 	srv := &http.Server{
-		Addr: "127.0.0.1:8000", // TODO: Add the address config
-		// Handler:   router,
+		Addr:      "127.0.0.1:8000", // TODO: Add the address config
+		Handler:   router,
 		TLSConfig: nil, // TODO: Add the TLS config
 	}
 

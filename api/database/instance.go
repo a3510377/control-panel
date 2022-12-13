@@ -113,7 +113,7 @@ func (i *DBInstance) AddTag(tags ...string) {
 	oldTags := i.GetTags()
 
 	for _, tag := range tags {
-		if slices.Contains(oldTags, tag) {
+		if slices.Contains(oldTags, tag) || tag == "" {
 			continue
 		}
 		tagsList = append(tagsList, models.Tags{Name: tag})
