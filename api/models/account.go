@@ -14,12 +14,12 @@ func MD5(str string) string {
 }
 
 type Account struct {
-	ID         id.ID       `json:"id" gorm:"primarykey"`         // ID
-	Name       string      `json:"name" gorm:"size:60;not null"` // 實例名稱
-	Nick       string      `json:"nick" gorm:"size:60;not null"` // 暱稱
-	Password   string      `json:"-" gorm:"size:60;not null"`    // 密碼
-	Permission string      `json:"permission"`                   // 權限
-	Instances  []*Instance `gorm:"many2many"`
+	ID         id.ID      `json:"id" gorm:"primarykey"`         // ID
+	Name       string     `json:"name" gorm:"size:60;not null"` // 實例名稱
+	Nick       string     `json:"nick" gorm:"size:60;not null"` // 暱稱
+	Password   string     `json:"-" gorm:"size:60;not null"`    // 密碼
+	Permission string     `json:"permission"`                   // 權限
+	Instances  []Instance `gorm:"many2many:instanceAccount"`
 
 	// TODO Email    string `json:"email" gorm:"size:60;not null"` // 電子郵件
 }
