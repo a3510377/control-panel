@@ -1,12 +1,12 @@
 package routers
 
 import (
-	"github.com/a3510377/control-panel/database"
+	"github.com/a3510377/control-panel/container"
 	privateRouter "github.com/a3510377/control-panel/routers/private"
 	"github.com/gin-gonic/gin"
 )
 
-func Routers(db *database.DB) *gin.Engine {
+func Routers(db *container.Container) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")

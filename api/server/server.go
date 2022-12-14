@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/a3510377/control-panel/container"
 	"github.com/a3510377/control-panel/database"
 	"github.com/a3510377/control-panel/routers"
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ func (s *Server) Start(db *database.DB) {
 	gin.SetMode("release")
 	gin.ForceConsoleColor()
 
-	router := routers.Routers(db)
+	router := routers.Routers(container.NewContainer(db))
 
 	srv := &http.Server{
 		Addr:      "127.0.0.1:8000", // TODO: Add the address config

@@ -3,6 +3,7 @@ package instance
 import (
 	"net/http"
 
+	"github.com/a3510377/control-panel/container"
 	"github.com/a3510377/control-panel/database"
 	bID "github.com/a3510377/control-panel/service/id"
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 
 const instanceDataKey = "instance_data"
 
-func AddHandler(db *database.DB, app *gin.RouterGroup) {
+func AddHandler(db *container.Container, app *gin.RouterGroup) {
 	instancePath := app.Group(":instance_id", func(c *gin.Context) {
 		id := bID.StringToID(c.Param("instance_id"))
 		// TODO add has promotion
