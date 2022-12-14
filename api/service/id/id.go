@@ -75,8 +75,7 @@ func (f ID) Time() time.Time {
 	return time.Unix(t/1e3, (t%1e3)*1e6)
 }
 
-// string to ID
-// if error return `-1`
+// string to ID, if not return -1
 func StringToID(s string) ID {
 	i, err := strconv.Atoi(s)
 	if err != nil {
