@@ -1,15 +1,10 @@
 package database
 
 import (
-	"errors"
-	"fmt"
-	"time"
-
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
 	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type DBInstance struct {
@@ -25,78 +20,48 @@ func ModelInstancesToDBInstances(db *DB, instances []models.Instance) []DBInstan
 	return dbInstances
 }
 
-func (db *DB) getInstanceByID(id id.ID) *models.Instance {
-	instance := &models.Instance{}
-
-	if err := db.Where("id = ?", id).Preload(clause.Associations).First(
-		instance).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil
-	}
-
-	return instance
+// 獲取全部實例
+func (db *DB) GetAllInstances() []DBInstance {
+	return ModelInstancesToDBInstances(db, find(db.PreloadAll(), []models.Instance{}))
 }
 
+// 從實例 ID 獲取實例(s)
+func (db *DB) GetInstancesByID(id ...id.ID) []DBInstance {
+	return ModelInstancesToDBInstances(db, find(db.PreloadAll(), []models.Instance{}, id))
+}
+
+// 從實例 ID 獲取實例
 func (db *DB) GetInstanceByID(id id.ID) *DBInstance {
-	if data := db.getInstanceByID(id); data != nil {
-		return &DBInstance{db, *data}
+	return &DBInstance{db, find(db.PreloadAll(), models.Instance{}, id)}
+}
+
+// 從實例名稱獲取實例
+func (db *DB) GetInstanceByName(name string) *DBInstance {
+	return &DBInstance{db, find(db.PreloadAll().Where("name = ?", name), models.Instance{})}
+}
+
+func (db *DB) GetInstancesByTag(tags ...string) []DBInstance {
+	dbTag, instances := find(db.Select("name").Where("name IN ?", tags), models.Tag{}), []DBInstance{}
+	for _, instance := range dbTag.Instances {
+		instances = append(instances, DBInstance{db, *instance})
 	}
-	return nil
-}
-
-func (db *DB) GetInstanceTagsByName(name ...string) []int {
-	tags, instanceTags := []int{}, []models.Tags{}
-
-	db.Where("name IN ?", name).Find(&instanceTags)
-	for _, tag := range instanceTags {
-		tags = append(tags, tag.ID)
-	}
-
-	return tags
-}
-
-func (db *DB) getInstanceByTags(tags ...string) *gorm.DB {
-	return db.Where("id IN ?", db.GetInstanceTagsByName(tags...))
-}
-
-func (db *DB) GetInstanceByTags(tags ...string) []DBInstance {
-	instances := []models.Instance{}
-
-	db.getInstanceByTags(tags...).Find(&instances)
-
-	return ModelInstancesToDBInstances(db, instances)
-}
-
-func (db *DB) GetInstanceByNameAndTags(name string, tags []string) []DBInstance {
-	instances := []models.Instance{}
-
-	db.getInstanceByTags(tags...).Where("name LIKE ?", fmt.Sprintf("%v%%", name)).Find(&instances)
-
-	return ModelInstancesToDBInstances(db, instances)
+	return instances
 }
 
 /* DBInstance */
-func (i *DBInstance) GetNow()                                  { i.Instance = *i.Db.getInstanceByID(i.ID) }
+func (i *DBInstance) GetNow()                                  { i.Instance = i.Db.GetInstanceByID(i.ID).Instance }
 func (i *DBInstance) Get() *gorm.DB                            { return i.Db.Model(&models.Instance{ID: i.ID}) }
 func (i *DBInstance) Model() *models.Instance                  { return &models.Instance{ID: i.ID} }
 func (i *DBInstance) Delete() error                            { return i.Db.Delete(i.Model()).Error }
 func (i *DBInstance) Update(column string, value any) *gorm.DB { return i.Get().Update(column, value) }
 func (i *DBInstance) SetNull(key string) error                 { return i.Update(key, gorm.Expr("NULL")).Error }
 
-func (i *DBInstance) SetName(name string) error        { return i.Update("name", name).Error }
-func (i *DBInstance) SetRootDir(root string) error     { return i.Update("RootDir", root).Error }
-func (i *DBInstance) SetType(Type string) error        { return i.Update("RootDir", Type).Error }
-func (i *DBInstance) SetLastTime(cmd string) error     { return i.Update("LastTime", cmd).Error }
-func (i *DBInstance) SetEndAt(time time.Time) error    { return i.Update("EndAt", time).Error }
-func (i *DBInstance) SetStartCommand(cmd string) error { return i.Update("StartCommand", cmd).Error }
-func (i *DBInstance) SetStopCommand(cmd string) error  { return i.Update("StopCommand", cmd).Error }
-func (i *DBInstance) ClearEndAt(time time.Time) error  { return i.SetNull("EndAt") }
-
 func (i *DBInstance) Updates(values any) *gorm.DB {
 	return i.Get().Omit("ID").Omit("CreatedAt").Updates(values)
 }
 
 func (i *DBInstance) GetTags() []string {
-	tags, strTags := []models.Tags{}, []string{}
+	tags, strTags := []models.Tag{}, []string{}
 
 	i.Get().Association("Tags").Find(&tags)
 	for _, tag := range tags {
@@ -107,19 +72,19 @@ func (i *DBInstance) GetTags() []string {
 }
 
 func (i *DBInstance) AddTag(tags ...string) {
-	tagsList := []models.Tags{}
+	tagsList := []models.Tag{}
 	oldTags := i.GetTags()
 
 	for _, tag := range tags {
 		if slices.Contains(oldTags, tag) || tag == "" {
 			continue
 		}
-		tagsList = append(tagsList, models.Tags{Name: tag})
+		tagsList = append(tagsList, models.Tag{Name: tag})
 	}
 
 	i.Get().Association("Tags").Append(tagsList)
 }
 
 func (i *DBInstance) RemoveTag(tag string) {
-	i.Get().Association("Tags").Delete(&models.Tags{Name: tag})
+	i.Get().Association("Tags").Delete(&models.Tag{Name: tag})
 }
