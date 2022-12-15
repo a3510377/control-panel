@@ -7,6 +7,6 @@ import (
 )
 
 func PrivateRouter(db *container.Container, app *gin.RouterGroup) {
-	instanceRouter := app.Group("/instance")
+	instanceRouter := app.Group("/instances")
 	instance.AddHandler(db, instanceRouter)
 }
