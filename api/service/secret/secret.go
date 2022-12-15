@@ -8,22 +8,33 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type JWT string
+var jwtKey = []byte(os.Getenv("jwt_secret"))
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.RegisteredClaims
-}
-type RefreshToken struct {
-	Token          string    `json:"token"`
-	ExpirationTime time.Time `json:"expiration"`
-}
+type (
+	JWT    string
+	Claims struct {
+		Username string `json:"username"`
+		jwt.RegisteredClaims
+	}
+	RefreshToken struct {
+		Token          JWT       `json:"token"`
+		ExpirationTime time.Time `json:"expiration"`
+	}
+)
 
-var jwtKey = os.Getenv("jwt_secret")
+func New(newTime time.Duration) (token *RefreshToken, status int) { return Create(&Claims{}, newTime) }
 
-func NewClaims() *Claims { return &Claims{} }
+func Create(claims *Claims, newTime time.Duration) (token *RefreshToken, status int) {
+	expirationTime := time.Now().Add(newTime)
 
-func Create(username string, time time.Duration) {
+	claims.RegisteredClaims = jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)}
+
+	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
+	if err != nil {
+		return nil, 500
+	}
+
+	return &RefreshToken{JWT(tokenString), expirationTime}, 200
 }
 
 // JWT to string
@@ -34,7 +45,7 @@ func (j JWT) String() string { return string(j) }
 // state: `401` Unauthorized
 // data: token info
 func (j JWT) Info() (data *Claims, status int) {
-	claims := NewClaims()
+	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(j.String(), claims, func(token *jwt.Token) (any, error) {
 		return jwtKey, nil
 	})
@@ -48,19 +59,19 @@ func (j JWT) Info() (data *Claims, status int) {
 	return claims, http.StatusOK
 }
 
-func (j JWT) Refresh(oldToken string, newTime time.Duration) (token *RefreshToken, status int) {
+// Refresh Token
+func (j *JWT) Refresh(newTime time.Duration) (refreshToken *RefreshToken, status int) {
 	claims, status := j.Info()
 	if status != 200 {
 		return nil, status
 	}
 
-	expirationTime := time.Now().Add(newTime)
-	claims.RegisteredClaims = jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)}
-
-	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
-	if err != nil {
-		return nil, 500
+	token, status := Create(claims, newTime)
+	if status != http.StatusOK {
+		return nil, status
 	}
 
-	return &RefreshToken{tokenString, expirationTime}, status
+	*j = JWT(token.Token)
+
+	return token, status
 }
