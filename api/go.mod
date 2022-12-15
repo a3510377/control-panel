@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.1
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/exp v0.0.0-20221212164502-fae10dda9338
 	gorm.io/driver/sqlite v1.4.3
