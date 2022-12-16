@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PrivateRouter(db *container.Container, app *gin.RouterGroup) {
+func PrivateRouter(container *container.Container, app *gin.RouterGroup) {
 	instanceRouter := app.Group("/instances")
-	instance.AddHandler(db, instanceRouter)
+	instance.AddHandler(container, instanceRouter)
 }

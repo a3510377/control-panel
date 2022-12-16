@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Routers(db *container.Container) *gin.Engine {
+func Routers(container *container.Container) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
-	privateRouter.PrivateRouter(db, api)
+	privateRouter.PrivateRouter(container, api)
 
 	return router
 }

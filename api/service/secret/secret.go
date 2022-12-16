@@ -45,7 +45,7 @@ func (j JWT) String() string { return string(j) }
 // state: `401` Unauthorized
 // data: token info
 func (j JWT) Info() (data *Claims, status int) {
-	claims := &Claims{}
+	var claims *Claims
 	token, err := jwt.ParseWithClaims(j.String(), claims, func(token *jwt.Token) (any, error) {
 		return jwtKey, nil
 	})

@@ -5,5 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func addInstancesHandlers(db *container.Container, app *gin.RouterGroup) {
+func addInstancesHandlers(container *container.Container, app *gin.RouterGroup) {
+	app.POST("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "POST"})
+	})
 }
