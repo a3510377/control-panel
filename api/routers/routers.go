@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/a3510377/control-panel/container"
 	privateRouter "github.com/a3510377/control-panel/routers/private"
+	publicRouter "github.com/a3510377/control-panel/routers/public"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +12,7 @@ func Routers(container *container.Container) *gin.Engine {
 
 	api := router.Group("/api")
 	privateRouter.PrivateRouter(container, api)
+	publicRouter.PublicRouter(container, api)
 
 	return router
 }

@@ -47,13 +47,19 @@ func (db *DB) CreateNewUser(username string, password string) (*DBAccount, error
 func (db *DB) GetUserByName(username string) *DBAccount {
 	var data *models.Account
 	db.First(data, "name = ?", username)
+	if data == nil {
+		return nil
+	}
 	return &DBAccount{db, *data}
 }
 
 // 通過 ID 獲取使用者
 func (db *DB) GetUserByID(id id.ID) *DBAccount {
 	var data *models.Account
-	db.First(data, "id = ?", id)
+	db.First(data, id)
+	if data == nil {
+		return nil
+	}
 	return &DBAccount{db, *data}
 }
 
@@ -63,6 +69,10 @@ func (i *DBAccount) GetNow()                                  { i.Account = i.Db
 func (i *DBAccount) Get() *gorm.DB                            { return i.Db.Model(&models.Account{ID: i.ID}) }
 func (i *DBAccount) Update(column string, value any) *gorm.DB { return i.Get().Update(column, value) }
 
+func (i *DBAccount) Updates(values any) *gorm.DB {
+	return i.Get().Omit("ID").Omit("Name").Omit("CreatedAt").Updates(values)
+}
+
 func (d *DBAccount) CheckPassword(password string) bool {
 	return HasPassword(password, []byte(d.Password))
 }
@@ -71,3 +81,5 @@ func (d *DBAccount) UpdatePassword(password string) {
 	d.Password = PasswordEncryption(password)
 	d.Db.Save(&d.Account)
 }
+
+// func (d *DBAccount) Create
