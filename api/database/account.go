@@ -59,7 +59,7 @@ func (db *DB) GetUserByID(id id.ID) *DBAccount {
 
 /* DBAccount */
 
-func (i *DBAccount) GetNow()                                  { i.Account = i.Db.GetUserByID(i.ID).Instance }
+func (i *DBAccount) GetNow()                                  { i.Account = i.Db.GetUserByID(i.ID).Account }
 func (i *DBAccount) Get() *gorm.DB                            { return i.Db.Model(&models.Account{ID: i.ID}) }
 func (i *DBAccount) Update(column string, value any) *gorm.DB { return i.Get().Update(column, value) }
 
