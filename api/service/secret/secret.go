@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtKey = []byte(os.Getenv("jwt_secret"))
+var jwtKey = []byte(os.Getenv("JWT_SECRET"))
 
 type (
 	JWT    string

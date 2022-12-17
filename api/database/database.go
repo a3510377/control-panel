@@ -5,13 +5,17 @@ import (
 	"os"
 
 	"github.com/a3510377/control-panel/models"
+	"github.com/go-playground/validator/v10"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
 
-type DB struct{ *gorm.DB }
+type DB struct {
+	*gorm.DB
+	Validate *validator.Validate
+}
 
 func NewDB(filename string) (*DB, error) {
 	db, err := connect()
@@ -30,7 +34,8 @@ func NewDB(filename string) (*DB, error) {
 	// Account
 	db.AutoMigrate(&models.Account{})
 
-	return &DB{db}, err
+	validate := validator.New()
+	return &DB{db, validate}, err
 }
 
 func connect() (*gorm.DB, error) {

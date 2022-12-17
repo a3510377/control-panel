@@ -1,12 +1,22 @@
 package database
 
 import (
+	baseErr "errors"
+	"fmt"
+	"strings"
+
 	"github.com/a3510377/control-panel/errors"
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
+	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+
+type NewAccountData struct {
+	Username string `json:"username" validate:"required,min=5,max=20"`
+	Password string `json:"password" validate:"required,min=5,max=20"`
+}
 
 type DBAccount struct {
 	Db *DB
@@ -26,14 +36,33 @@ func HasPassword(password string, hash []byte) bool {
 }
 
 // 創建一個新的使用者
-func (db *DB) CreateNewUser(username string, password string) (*DBAccount, error) {
-	if db.GetUserByName(username) != nil {
+func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
+	err := db.Validate.Struct(user)
+	if err != nil && len(err.(validator.ValidationErrors)) > 0 {
+		err := err.(validator.ValidationErrors)[0]
+		errorMsg := strings.ToLower(err.Field())
+
+		switch err.Tag() {
+		case "required":
+			errorMsg += " is required."
+		case "min":
+			errorMsg += fmt.Sprintf(" (%v) required at least %v", err.Type(), err.Param())
+		case "max":
+			errorMsg += fmt.Sprintf(" (%v) only has a maximum of %v", err.Type(), err.Param())
+		default:
+			errorMsg = err.Error()
+		}
+
+		return nil, baseErr.New(errorMsg)
+	}
+	fmt.Println(db.GetUserByName(user.Username))
+	if db.GetUserByName(user.Username) != nil {
 		return nil, errors.ErrAccountIsUse
 	}
 
 	data := models.Account{
-		Name:     username,
-		Password: PasswordEncryption(password),
+		Name:     user.Username,
+		Password: PasswordEncryption(user.Password),
 	}
 
 	if err := db.Create(&data).Error; err != nil {
@@ -45,9 +74,8 @@ func (db *DB) CreateNewUser(username string, password string) (*DBAccount, error
 
 // 通過名稱獲取使用者
 func (db *DB) GetUserByName(username string) *DBAccount {
-	var data *models.Account
-	db.First(data, "name = ?", username)
-	if data == nil {
+	data := &models.Account{Name: username}
+	if baseErr.Is(db.First(data).Error, gorm.ErrRecordNotFound) {
 		return nil
 	}
 	return &DBAccount{db, *data}
@@ -81,5 +109,3 @@ func (d *DBAccount) UpdatePassword(password string) {
 	d.Password = PasswordEncryption(password)
 	d.Db.Save(&d.Account)
 }
-
-// func (d *DBAccount) Create
