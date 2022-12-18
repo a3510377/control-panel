@@ -19,7 +19,13 @@ func addCreateHandlers(container *container.Container, app *gin.RouterGroup) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"token": "", "data": map[string]any{
+		token, status := data.CreateNewJWT()
+		if status != http.StatusOK {
+			c.JSON(status, gin.H{"error": "create token error"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"token": token, "data": map[string]any{
 			"id":         data.ID,
 			"name":       data.Name,
 			"permission": data.Permission,

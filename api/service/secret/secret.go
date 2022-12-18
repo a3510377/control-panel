@@ -31,10 +31,10 @@ func Create(claims Claims, newTime time.Duration) (token *RefreshToken, status i
 
 	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
 	if err != nil {
-		return nil, 500
+		return nil, http.StatusInternalServerError
 	}
 
-	return &RefreshToken{JWT(tokenString), expirationTime}, 200
+	return &RefreshToken{JWT(tokenString), expirationTime}, http.StatusOK
 }
 
 // JWT to string
