@@ -55,9 +55,6 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 
 		return nil, baseErr.New(errorMsg)
 	}
-	if db.GetUserByName(user.Username) != nil {
-		return nil, errors.ErrAccountIsUse
-	}
 
 	data := models.Account{
 		Name:     user.Username,
@@ -65,6 +62,9 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 	}
 
 	if err := db.Create(&data).Error; err != nil {
+		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed") {
+			return nil, errors.ErrAccountIsUse
+		}
 		return nil, err
 	}
 
