@@ -22,9 +22,9 @@ type (
 	}
 )
 
-func New(newTime time.Duration) (token *RefreshToken, status int) { return Create(&Claims{}, newTime) }
+func New(newTime time.Duration) (token *RefreshToken, status int) { return Create(Claims{}, newTime) }
 
-func Create(claims *Claims, newTime time.Duration) (token *RefreshToken, status int) {
+func Create(claims Claims, newTime time.Duration) (token *RefreshToken, status int) {
 	expirationTime := time.Now().Add(newTime)
 
 	claims.RegisteredClaims = jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)}
@@ -66,7 +66,7 @@ func (j *JWT) Refresh(newTime time.Duration) (refreshToken *RefreshToken, status
 		return nil, status
 	}
 
-	token, status := Create(claims, newTime)
+	token, status := Create(*claims, newTime)
 	if status != http.StatusOK {
 		return nil, status
 	}

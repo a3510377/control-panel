@@ -4,10 +4,12 @@ import (
 	baseErr "errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/a3510377/control-panel/errors"
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
+	"github.com/a3510377/control-panel/service/secret"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -61,7 +63,7 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 		Password: PasswordEncryption(user.Password),
 	}
 
-	if err := db.Create(&data).Error; err != nil {
+	if err := db.Select("Name", "Password").Create(&data).Error; err != nil {
 		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed") {
 			return nil, errors.ErrAccountIsUse
 		}
@@ -83,6 +85,7 @@ func (db *DB) GetUserByName(username string) *DBAccount {
 
 // 通過 ID 獲取使用者
 func (db *DB) GetUserByID(id id.ID) *DBAccount {
+	fmt.Println("id", id)
 	var data *models.Account
 	db.First(data, id)
 	if data == nil {
@@ -108,4 +111,10 @@ func (d *DBAccount) CheckPassword(password string) bool {
 func (d *DBAccount) UpdatePassword(password string) {
 	d.Password = PasswordEncryption(password)
 	d.Db.Save(&d.Account)
+}
+
+func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
+	return secret.Create(secret.Claims{
+		Username: d.Name,
+	}, time.Hour*1) // TODO set time from config
 }
