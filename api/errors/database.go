@@ -2,4 +2,4 @@ package errors
 
 import "errors"
 
-var ErrAccountIsUse = errors.New("Username already in use")
+var ErrAccountIsUse = errors.New("username already in use")
