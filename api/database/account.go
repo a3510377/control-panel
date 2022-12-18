@@ -10,7 +10,6 @@ import (
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
 	"github.com/a3510377/control-panel/service/secret"
-	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -39,23 +38,8 @@ func HasPassword(password string, hash []byte) bool {
 
 // 創建一個新的使用者
 func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
-	err := db.Validate.Struct(user)
-	if err != nil && len(err.(validator.ValidationErrors)) > 0 {
-		err := err.(validator.ValidationErrors)[0]
-		errorMsg := strings.ToLower(err.Field())
-
-		switch err.Tag() {
-		case "required":
-			errorMsg += " is required."
-		case "min":
-			errorMsg += fmt.Sprintf(" (%v) required at least %v", err.Type(), err.Param())
-		case "max":
-			errorMsg += fmt.Sprintf(" (%v) only has a maximum of %v", err.Type(), err.Param())
-		default:
-			errorMsg = err.Error()
-		}
-
-		return nil, baseErr.New(errorMsg)
+	if err := CheckJSONData(user); err != nil {
+		return nil, err
 	}
 
 	data := models.Account{
