@@ -55,7 +55,6 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 
 		return nil, baseErr.New(errorMsg)
 	}
-	fmt.Println(db.GetUserByName(user.Username))
 	if db.GetUserByName(user.Username) != nil {
 		return nil, errors.ErrAccountIsUse
 	}
@@ -74,8 +73,9 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 
 // 通過名稱獲取使用者
 func (db *DB) GetUserByName(username string) *DBAccount {
-	data := &models.Account{Name: username}
-	if baseErr.Is(db.First(data).Error, gorm.ErrRecordNotFound) {
+	data := &models.Account{}
+	err := db.Where("name = ?", username).First(data).Error
+	if baseErr.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
 	return &DBAccount{db, *data}
