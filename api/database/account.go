@@ -63,7 +63,7 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 		Password: PasswordEncryption(user.Password),
 	}
 
-	if err := db.Select("Name", "Password").Create(&data).Error; err != nil {
+	if err := db.Create(&data).Error; err != nil {
 		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed") {
 			return nil, errors.ErrAccountIsUse
 		}
