@@ -3,6 +3,7 @@ package database
 import (
 	baseErr "errors"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -57,6 +58,17 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 	return &DBAccount{db, data}, nil
 }
 
+func (d *DB) GetUserByJWT(token string) (data *DBAccount, status int) {
+	claims, status := secret.JWT(token).Info()
+	if status != http.StatusOK {
+		return nil, status
+	}
+	if data := d.GetUserByID(claims.ID); data != nil {
+		return data, status
+	}
+	return nil, http.StatusNotFound
+}
+
 // 通過名稱獲取使用者
 func (db *DB) GetUserByName(username string) *DBAccount {
 	data := models.Account{}
@@ -70,8 +82,7 @@ func (db *DB) GetUserByName(username string) *DBAccount {
 
 // 通過 ID 獲取使用者
 func (db *DB) GetUserByID(id id.ID) *DBAccount {
-	var data *models.Account
-	// Where("id = ?", id).
+	data := &models.Account{}
 	db.First(data, id)
 	if data == nil {
 		return nil
@@ -104,6 +115,7 @@ func (d *DBAccount) UpdatePassword(password string) {
 
 func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
 	return secret.Create(secret.Claims{
+		ID:       d.ID,
 		Username: d.Name,
 	}, time.Hour*1) // TODO set time from config
 }

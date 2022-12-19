@@ -19,6 +19,7 @@ func AddHandler(container *container.Container, app *gin.RouterGroup) {
 			c.JSON(http.StatusNotFound, gin.H{"message": "instance_id not found"})
 		} else {
 			c.Set(instanceDataKey, data)
+			c.Next()
 			return
 		}
 

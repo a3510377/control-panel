@@ -4,10 +4,18 @@ import (
 	"github.com/a3510377/control-panel/database"
 )
 
-type Container struct {
-	*database.DB
-}
+type (
+	accountContainer struct {
+		db *database.DB
+	}
+	Container struct {
+		*database.DB
+		Account accountContainer
+	}
+)
 
 func NewContainer(db *database.DB) *Container {
-	return &Container{db}
+	return &Container{db, accountContainer{
+		db: db,
+	}}
 }

@@ -35,4 +35,8 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 		}
 		c.JSON(http.StatusOK, gin.H{"data": data.JSON(), "token": token})
 	})
+	app.Use(container.Account.CheckFromRequest).GET("/@me", func(c *gin.Context) {
+		// c.JSON(http.StatusOK, gin.H{"data": JSON()})
+	})
+	app.GET("/:id") // TODO
 }

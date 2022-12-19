@@ -2,17 +2,19 @@ package secret
 
 import (
 	"net/http"
-	"os"
 	"time"
 
+	"github.com/a3510377/control-panel/service/id"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtKey = []byte(os.Getenv("JWT_SECRET"))
+// var jwtKey = []byte(os.Getenv("JWT_SECRET"))
+var jwtKey = []byte("test")
 
 type (
 	JWT    string
 	Claims struct {
+		ID       id.ID  `json:"id"`
 		Username string `json:"username"`
 		jwt.RegisteredClaims
 	}
@@ -29,7 +31,7 @@ func Create(claims Claims, newTime time.Duration) (token *RefreshToken, status i
 
 	claims.RegisteredClaims = jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)}
 
-	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
+	tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims).SignedString(jwtKey)
 	if err != nil {
 		return nil, http.StatusInternalServerError
 	}
@@ -45,12 +47,13 @@ func (j JWT) String() string { return string(j) }
 // state: `401` Unauthorized
 // data: token info
 func (j JWT) Info() (data *Claims, status int) {
-	var claims *Claims
+	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(j.String(), claims, func(token *jwt.Token) (any, error) {
 		return jwtKey, nil
 	})
 
-	if err == jwt.ErrSignatureInvalid || !token.Valid {
+	// err == jwt.ErrSignatureInvalid ||
+	if token == nil || (token != nil && !token.Valid) {
 		return nil, http.StatusUnauthorized
 	} else if err != nil {
 		return nil, http.StatusBadRequest
