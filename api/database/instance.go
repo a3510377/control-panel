@@ -2,6 +2,7 @@ package database
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/node"
@@ -118,7 +119,7 @@ func (i *DBInstance) Node(tags ...string) *node.Instance {
 			ID:          i.ID,
 			Name:        i.Name,
 			Root:        i.RootDir,
-			ProcessArgs: []string{i.StartCommand},
+			ProcessArgs: strings.Split(i.StartCommand, " "),
 		}
 		instancesNode[i.ID] = data
 	}

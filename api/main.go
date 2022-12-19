@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/a3510377/control-panel/database"
 	"github.com/a3510377/control-panel/server"
 )
@@ -11,7 +13,7 @@ func main() {
 	// fmt.Println(db.GetAutoStartInstances())
 
 	for _, instance := range db.GetAutoStartInstances() {
-		instance.Run()
+		fmt.Println(instance.Run())
 	}
 	server.New().Start(db)
 }
