@@ -26,4 +26,3 @@ func (f *ID) Scan(src any) error {
 func (f *ID) Value() (driver.Value, error) {
 	return f.Int64(), nil
 }
-	
