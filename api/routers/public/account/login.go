@@ -28,6 +28,6 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"data": data})
+		c.JSON(http.StatusOK, gin.H{"data": data.JSON()})
 	})
 }

@@ -25,11 +25,6 @@ func addCreateHandlers(container *container.Container, app *gin.RouterGroup) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"token": token, "data": map[string]any{
-			"id":         data.ID,
-			"name":       data.Name,
-			"permission": data.Permission,
-			"created_at": data.CreatedAt,
-		}})
+		c.JSON(http.StatusOK, gin.H{"token": token, "data": data.JSON()})
 	})
 }
