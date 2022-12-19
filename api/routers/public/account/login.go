@@ -28,6 +28,11 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"data": data.JSON()})
+		token, status := data.CreateNewJWT()
+		if status != http.StatusOK {
+			c.JSON(status, gin.H{"error": "create token error"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": data.JSON(), "token": token})
 	})
 }
