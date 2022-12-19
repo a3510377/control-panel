@@ -36,8 +36,6 @@ func NewDB(filename string) (*DB, error) {
 	})
 	db.Config.Logger = dbLogger
 
-	// db.Statement.Schema.LookUpField()
-
 	// Instance
 	db.AutoMigrate(&models.Instance{}, &models.Tag{})
 	// Account

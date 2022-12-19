@@ -8,6 +8,7 @@ import (
 
 // CheckFromRequest check token from request
 // if token is valid, set `user` info to gin.Context
+// get user info from gin.Context: c.MustGet("user").(*database.DBAccount)
 func (a accountContainer) CheckFromRequest(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
@@ -18,7 +19,6 @@ func (a accountContainer) CheckFromRequest(c *gin.Context) {
 
 	info, status := a.db.GetUserByJWT(token)
 	if status == http.StatusOK {
-		c.AbortWithStatus(status)
 		c.Set("user", info)
 
 		c.Next()

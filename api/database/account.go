@@ -83,8 +83,7 @@ func (db *DB) GetUserByName(username string) *DBAccount {
 // 通過 ID 獲取使用者
 func (db *DB) GetUserByID(id id.ID) *DBAccount {
 	data := &models.Account{}
-	db.First(data, id)
-	if data == nil {
+	if db.First(data, id).Error == gorm.ErrRecordNotFound {
 		return nil
 	}
 	return &DBAccount{db, *data}
@@ -125,6 +124,7 @@ func (d *DBAccount) JSON() map[string]any {
 	return map[string]any{
 		"id":         d.ID,
 		"name":       d.Name,
+		"nick":       d.Nick,
 		"permission": d.Permission,
 		"created_at": d.CreatedAt,
 	}

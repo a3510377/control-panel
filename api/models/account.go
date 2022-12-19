@@ -12,7 +12,7 @@ import (
 type Account struct {
 	ID         id.ID                 `json:"id" gorm:"primarykey"`                     // ID
 	Name       string                `json:"name" gorm:"uniqueIndex;size:20;not null"` // 實例名稱
-	Nick       string                `json:"nick" gorm:"size:20"`                      // 暱稱
+	Nick       string                `json:"nick" gorm:"size:20;default:null"`         // 暱稱
 	Password   string                `json:"-" gorm:"not null"`                        // 密碼
 	Permission permission.Permission `json:"permission"`                               // 權限
 	CreatedAt  time.Time             `json:"create_at"`                                // 創建時間
