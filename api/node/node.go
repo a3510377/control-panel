@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+
+	"github.com/a3510377/control-panel/service/id"
 )
 
 const (
@@ -17,6 +19,8 @@ const (
 )
 
 type Instance struct {
+	ID          id.ID
+	Name        string
 	Root        string
 	ProcessArgs []string
 
@@ -25,15 +29,6 @@ type Instance struct {
 	CommandInPipe  io.Writer
 	CommandOutPipe io.ReadCloser
 	handles        []func(HandleEvent)
-}
-
-func New(root string, args ...string) *Instance {
-	node := &Instance{
-		ProcessArgs: args,
-		Root:        root,
-	}
-	node.init()
-	return node
 }
 
 func (i *Instance) init() error {
@@ -75,6 +70,7 @@ func (i *Instance) Run() error {
 		i.SetState(STATE_STOP)
 		return err
 	} else {
+		defer i.Kill()
 		i.SetState(STATE_RUNNING)
 	}
 

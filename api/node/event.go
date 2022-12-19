@@ -1,6 +1,9 @@
 package node
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type EventName string
 
@@ -24,6 +27,9 @@ func (i *Instance) AddEvent(handler func(HandleEvent)) {
 }
 
 func (i *Instance) Dispatch(ev HandleEvent) {
+	fmt.Println("-------------------------------------------")
+	fmt.Println(ev)
+	fmt.Println("-------------------------------------------")
 	for _, handler := range i.handles {
 		handler(ev)
 	}

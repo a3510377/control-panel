@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 
 	"github.com/a3510377/control-panel/models"
+	"github.com/a3510377/control-panel/node"
 	"github.com/a3510377/control-panel/service/id"
 	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
 )
+
+var instancesNode = map[id.ID]*node.Instance{}
 
 type DBInstance struct {
 	Db *DB
@@ -34,6 +37,10 @@ func (db *DB) GetAllInstances() []DBInstance {
 	return ModelInstancesToDBInstances(db, find(db.PreloadAll(), []models.Instance{}))
 }
 
+func (db *DB) GetAutoStartInstances() []DBInstance {
+	return ModelInstancesToDBInstances(db, find(db.PreloadAll().Where("auto_start = ?", true), []models.Instance{}))
+}
+
 // 從實例 ID 獲取實例(s)
 func (db *DB) GetInstancesByID(id ...id.ID) []DBInstance {
 	return ModelInstancesToDBInstances(db, find(db.PreloadAll(), []models.Instance{}, id))
@@ -58,6 +65,7 @@ func (db *DB) GetInstancesByTag(tags ...string) []DBInstance {
 }
 
 /* DBInstance */
+
 func (i *DBInstance) GetNow() {
 	if data := i.Db.GetInstanceByID(i.ID); data != nil {
 		i.Instance = data.Instance
@@ -100,6 +108,25 @@ func (i *DBInstance) AddTag(tags ...string) {
 
 func (i *DBInstance) RemoveTag(tag string) {
 	i.Get().Association("Tags").Delete(&models.Tag{Name: tag})
+}
+
+func (i *DBInstance) Node(tags ...string) *node.Instance {
+	data, ok := instancesNode[i.ID]
+	if !ok {
+		// i.RootDir, i.StartCommand)
+		data = &node.Instance{
+			ID:          i.ID,
+			Name:        i.Name,
+			Root:        i.RootDir,
+			ProcessArgs: []string{i.StartCommand},
+		}
+		instancesNode[i.ID] = data
+	}
+	return data
+}
+
+func (i *DBInstance) Run() error {
+	return i.Node().Run()
 }
 
 func (i *DBInstance) JSON() (result map[string]any) {

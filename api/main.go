@@ -1,13 +1,17 @@
 package main
 
 import (
-	"os"
-
-	"github.com/a3510377/control-panel/cli"
+	"github.com/a3510377/control-panel/database"
+	"github.com/a3510377/control-panel/server"
 )
 
 func main() {
-	if err := cli.NewCommand().Execute(); err != nil {
-		os.Exit(1)
+	db, _ := database.NewDB("test.db")
+
+	// fmt.Println(db.GetAutoStartInstances())
+
+	for _, instance := range db.GetAutoStartInstances() {
+		instance.Run()
 	}
+	server.New().Start(db)
 }
