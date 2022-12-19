@@ -7,6 +7,7 @@ import (
 
 func addInstancesHandlers(container *container.Container, app *gin.RouterGroup) {
 	app.POST("/", func(c *gin.Context) {
+		// TODO add create instance
 		c.JSON(200, gin.H{"message": "POST"})
 	})
 }

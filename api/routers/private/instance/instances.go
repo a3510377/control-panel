@@ -29,7 +29,6 @@ func addInstanceHandlers(container *container.Container, instancePath *gin.Route
 		data := c.MustGet(instanceDataKey).(*database.DBInstance)
 		if err := data.Delete(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "instance deleted error"})
-			// TODO add error log
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"error": "instance deleted"})
