@@ -2,7 +2,6 @@ package id
 
 import (
 	"database/sql/driver"
-	"fmt"
 )
 
 func (f *ID) Scan(src any) error {
@@ -25,6 +24,6 @@ func (f *ID) Scan(src any) error {
 }
 
 func (f *ID) Value() (driver.Value, error) {
-	fmt.Println("test-value: ", f)
 	return f.Int64(), nil
 }
+	
