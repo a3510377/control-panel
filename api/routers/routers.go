@@ -11,7 +11,9 @@ func Routers(container *container.Container) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
-	privateRouter.PrivateRouter(container, api)
+	private := api.Group("/", container.Account.CheckFromRequest)
+
+	privateRouter.PrivateRouter(container, private)
 	publicRouter.PublicRouter(container, api)
 
 	return router
