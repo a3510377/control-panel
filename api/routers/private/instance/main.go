@@ -9,7 +9,7 @@ import (
 )
 
 func AddHandler(container *container.Container, app *gin.RouterGroup) {
-	instancePath := app.Group(":instance_id", func(c *gin.Context) {
+	instancePath := app.Group("/:instance_id", func(c *gin.Context) {
 		id := IDD.StringToID(c.Param("instance_id"))
 		// TODO add has promotion
 
@@ -25,6 +25,6 @@ func AddHandler(container *container.Container, app *gin.RouterGroup) {
 
 		c.Abort()
 	})
-	addInstanceHandlers(container, app)
-	addInstancesHandlers(container, instancePath)
+	addInstanceHandlers(container, instancePath)
+	addInstancesHandlers(container, app)
 }
