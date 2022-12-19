@@ -20,6 +20,8 @@ func ModelInstancesToDBInstances(db *DB, instances []models.Instance) []DBInstan
 	return dbInstances
 }
 
+func (db *DB) CreateNewInstance(instances *models.Instance) error { return db.Create(instances).Error }
+
 // 獲取全部實例
 func (db *DB) GetAllInstances() []DBInstance {
 	return ModelInstancesToDBInstances(db, find(db.PreloadAll(), []models.Instance{}))

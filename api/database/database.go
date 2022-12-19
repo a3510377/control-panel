@@ -1,25 +1,18 @@
 package database
 
 import (
-	baseErr "errors"
-	"fmt"
+	"errors"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/a3510377/control-panel/models"
+	"github.com/a3510377/control-panel/utils/JValidator"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
-
-var validate *validator.Validate
-
-func init() {
-	validate = validator.New()
-}
 
 type DB struct {
 	*gorm.DB
@@ -41,7 +34,7 @@ func NewDB(filename string) (*DB, error) {
 	// Account
 	db.AutoMigrate(&models.Account{})
 
-	return &DB{db, validate}, err
+	return &DB{db, JValidator.Validate}, err
 }
 
 func connect() (*gorm.DB, error) {
@@ -61,24 +54,13 @@ func find[T any](db *gorm.DB, data T, id ...any) T {
 	return data
 }
 
-func CheckJSONData(user any) error {
-	err := validate.Struct(user)
+func CheckJSONData(data any) error { return formatValidatorError(JValidator.Validate.Struct(data)) }
+
+func formatValidatorError(err error) error {
 	if err != nil && len(err.(validator.ValidationErrors)) > 0 {
 		err := err.(validator.ValidationErrors)[0]
-		errorMsg := strings.ToLower(err.Field())
 
-		switch err.Tag() {
-		case "required":
-			errorMsg += " is required."
-		case "min":
-			errorMsg += fmt.Sprintf(" (%v) required at least %v", err.Type(), err.Param())
-		case "max":
-			errorMsg += fmt.Sprintf(" (%v) only has a maximum of %v", err.Type(), err.Param())
-		default:
-			errorMsg = err.Error()
-		}
-
-		return baseErr.New(errorMsg)
+		return errors.New(err.Translate(JValidator.Trans))
 	}
 
 	return nil
