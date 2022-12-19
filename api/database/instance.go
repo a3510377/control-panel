@@ -1,6 +1,8 @@
 package database
 
 import (
+	"encoding/json"
+
 	"github.com/a3510377/control-panel/models"
 	"github.com/a3510377/control-panel/service/id"
 	"golang.org/x/exp/slices"
@@ -20,7 +22,12 @@ func ModelInstancesToDBInstances(db *DB, instances []models.Instance) []DBInstan
 	return dbInstances
 }
 
-func (db *DB) CreateNewInstance(instances *models.Instance) error { return db.Create(instances).Error }
+func (db *DB) CreateNewInstance(instances *models.Instance) (*DBInstance, error) {
+	if err := db.Create(instances).Error; err != nil {
+		return nil, err
+	}
+	return &DBInstance{db, *instances}, nil
+}
 
 // 獲取全部實例
 func (db *DB) GetAllInstances() []DBInstance {
@@ -51,7 +58,11 @@ func (db *DB) GetInstancesByTag(tags ...string) []DBInstance {
 }
 
 /* DBInstance */
-func (i *DBInstance) GetNow()                                  { i.Instance = i.Db.GetInstanceByID(i.ID).Instance }
+func (i *DBInstance) GetNow() {
+	if data := i.Db.GetInstanceByID(i.ID); data != nil {
+		i.Instance = data.Instance
+	}
+}
 func (i *DBInstance) Get() *gorm.DB                            { return i.Db.Model(&models.Instance{ID: i.ID}) }
 func (i *DBInstance) Model() *models.Instance                  { return &models.Instance{ID: i.ID} }
 func (i *DBInstance) Delete() error                            { return i.Db.Delete(i.Model()).Error }
@@ -89,4 +100,11 @@ func (i *DBInstance) AddTag(tags ...string) {
 
 func (i *DBInstance) RemoveTag(tag string) {
 	i.Get().Association("Tags").Delete(&models.Tag{Name: tag})
+}
+
+func (i *DBInstance) JSON() (result map[string]any) {
+	i.GetNow()
+	b, _ := json.Marshal(&i.Instance)
+	_ = json.Unmarshal(b, &result)
+	return
 }

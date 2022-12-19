@@ -2,10 +2,10 @@ package models
 
 import (
 	"strings"
-	"time"
 
 	"github.com/a3510377/control-panel/service/id"
 	"github.com/a3510377/control-panel/service/permission"
+	"github.com/a3510377/control-panel/utils/JTime"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +15,7 @@ type Account struct {
 	Nick       string                `json:"nick" gorm:"size:20;default:null"`         // 暱稱
 	Password   string                `json:"-" gorm:"not null"`                        // 密碼
 	Permission permission.Permission `json:"permission"`                               // 權限
-	CreatedAt  time.Time             `json:"create_at"`                                // 創建時間
+	CreatedAt  JTime.Time            `json:"create_at"`                                // 創建時間
 	Instances  []*Instance           `gorm:"many2many:instanceAccount"`                //
 
 	// TODO Email    string `json:"email" gorm:"size:60;not null"` // 電子郵件

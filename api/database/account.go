@@ -1,6 +1,7 @@
 package database
 
 import (
+	"encoding/json"
 	baseErr "errors"
 	"fmt"
 	"net/http"
@@ -119,13 +120,9 @@ func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
 	}, time.Hour*1) // TODO set time from config
 }
 
-func (d *DBAccount) JSON() map[string]any {
+func (d *DBAccount) JSON() (result map[string]any) {
 	d.GetNow()
-	return map[string]any{
-		"id":         d.ID,
-		"name":       d.Name,
-		"nick":       d.Nick,
-		"permission": d.Permission,
-		"created_at": d.CreatedAt,
-	}
+	b, _ := json.Marshal(&d.Account)
+	_ = json.Unmarshal(b, &result)
+	return
 }
