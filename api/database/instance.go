@@ -126,9 +126,7 @@ func (i *DBInstance) Node(tags ...string) *node.Instance {
 	return data
 }
 
-func (i *DBInstance) Run() error {
-	return i.Node().Run()
-}
+func (i *DBInstance) Run(keep bool) error { return i.Node().Run(keep) }
 
 func (i *DBInstance) JSON() (result map[string]any) {
 	i.GetNow()

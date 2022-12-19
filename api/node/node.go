@@ -53,13 +53,14 @@ func (i *Instance) init() error {
 	return nil
 }
 
-func (i *Instance) Run() error {
+func (i *Instance) Run(keep bool) error { // TODO add support for keep
 	i.SetState(STATE_STARTING)
 	if err := i.init(); err != nil {
 		return err
 	}
 
 	go func() {
+		// FIXME this should be done in a separate goroutine
 		buf := bufio.NewScanner(i.CommandOutPipe)
 		for buf.Scan() {
 			i.Dispatch(HandleEvent{Name: MessageEvent, Data: buf.Text()}) // call `MessageEvent`
@@ -70,12 +71,12 @@ func (i *Instance) Run() error {
 		i.SetState(STATE_STOP)
 		return err
 	} else {
-		defer i.Kill()
 		i.SetState(STATE_RUNNING)
 	}
 
+	defer i.Kill()
+
 	err := i.Cmd.Wait()
-	i.SetState(STATE_STOP)
 	if err != nil {
 		return err
 	}
