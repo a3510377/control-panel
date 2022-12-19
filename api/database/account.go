@@ -59,18 +59,19 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 
 // 通過名稱獲取使用者
 func (db *DB) GetUserByName(username string) *DBAccount {
-	data := &models.Account{}
-	err := db.Where("name = ?", strings.ToLower(username)).First(data).Error
+	data := models.Account{}
+	err := db.Where("name = ?", strings.ToLower(username)).First(&data).Error
+	fmt.Println(data)
 	if baseErr.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
-	return &DBAccount{db, *data}
+	return &DBAccount{db, data}
 }
 
 // 通過 ID 獲取使用者
 func (db *DB) GetUserByID(id id.ID) *DBAccount {
-	fmt.Println("id", id)
 	var data *models.Account
+	// Where("id = ?", id).
 	db.First(data, id)
 	if data == nil {
 		return nil
@@ -80,7 +81,11 @@ func (db *DB) GetUserByID(id id.ID) *DBAccount {
 
 /* DBAccount */
 
-func (i *DBAccount) GetNow()                                  { i.Account = i.Db.GetUserByID(i.ID).Account }
+func (i *DBAccount) GetNow() {
+	if data := i.Db.GetUserByID(i.ID); data != nil {
+		i.Account = data.Account
+	}
+}
 func (i *DBAccount) Get() *gorm.DB                            { return i.Db.Model(&models.Account{ID: i.ID}) }
 func (i *DBAccount) Update(column string, value any) *gorm.DB { return i.Get().Update(column, value) }
 
@@ -104,6 +109,7 @@ func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
 }
 
 func (d *DBAccount) JSON() map[string]any {
+	d.GetNow()
 	return map[string]any{
 		"id":         d.ID,
 		"name":       d.Name,

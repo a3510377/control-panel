@@ -1,6 +1,9 @@
 package id
 
-import "database/sql/driver"
+import (
+	"database/sql/driver"
+	"fmt"
+)
 
 func (f *ID) Scan(src any) error {
 	switch src := src.(type) {
@@ -14,11 +17,14 @@ func (f *ID) Scan(src any) error {
 		*f = StringToID(src)
 	case int:
 		*f = ID(src)
+	case int64:
+		*f = ID(src)
 	}
 
 	return nil
 }
 
 func (f *ID) Value() (driver.Value, error) {
+	fmt.Println("test-value: ", f)
 	return f.Int64(), nil
 }

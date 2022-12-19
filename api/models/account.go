@@ -10,8 +10,7 @@ import (
 )
 
 type Account struct {
-	IND        uint                  `gorm:"primarykey"`                               // ID
-	ID         id.ID                 `json:"id" gorm:"uniqueIndex;not null"`           // ID
+	ID         id.ID                 `json:"id" gorm:"primarykey"`                     // ID
 	Name       string                `json:"name" gorm:"uniqueIndex;size:20;not null"` // 實例名稱
 	Nick       string                `json:"nick" gorm:"size:20"`                      // 暱稱
 	Password   string                `json:"-" gorm:"not null"`                        // 密碼
