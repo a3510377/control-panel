@@ -55,7 +55,9 @@ func (s *Server) Start() {
 }
 
 func (s *Server) AddFileHandler(dir fs.FS) {
+	fileServer := http.FileServer(http.FS(dir))
+
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
-		http.FileServer(http.FS(dir)).ServeHTTP(c.Writer, c.Request)
+		fileServer.ServeHTTP(c.Writer, c.Request)
 	})
 }
