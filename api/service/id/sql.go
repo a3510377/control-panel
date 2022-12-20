@@ -2,6 +2,7 @@ package id
 
 import (
 	"database/sql/driver"
+	"errors"
 )
 
 func (f *ID) Scan(src any) error {
@@ -20,7 +21,7 @@ func (f *ID) Scan(src any) error {
 		*f = ID(src)
 	}
 
-	return nil
+	return errors.New("failed to scan ID")
 }
 
 func (f *ID) Value() (driver.Value, error) {
