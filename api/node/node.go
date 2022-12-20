@@ -53,7 +53,7 @@ func (i *Instance) init() error {
 	return nil
 }
 
-func (i *Instance) Run(keep bool) error { // TODO add support for keep
+func (i *Instance) Run() error {
 	i.SetState(STATE_STARTING)
 	if err := i.init(); err != nil {
 		return err

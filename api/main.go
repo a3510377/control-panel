@@ -10,7 +10,7 @@ func main() {
 	db, _ := database.NewDB("test.db")
 
 	for _, instance := range db.GetAutoStartInstances() {
-		go instance.Run(true)
+		go instance.Run()
 	}
 	server.New().Start(db)
 }
