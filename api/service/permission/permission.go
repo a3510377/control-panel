@@ -16,7 +16,7 @@ const (
 )
 
 const (
-	Administrator = 1 << iota // 1 最高管理 S,I
+	Administrator Permission = 1 << iota // 1 最高管理 S,I
 
 	ManageUser // 2 管理用戶 S,I
 	ManageNick // 3 管理暱稱 S,I
@@ -32,7 +32,7 @@ const (
 	ReadState // 11 讀取狀態 S,I
 	ViewLog   // 12 查看日誌 S,I
 
-	None = 0 // 0 無權限 S,I
+	None Permission = 0 // 0 無權限 S,I
 )
 
 func (p Permission) Int64() int64   { return int64(p) }
