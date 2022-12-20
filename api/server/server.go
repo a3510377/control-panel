@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -14,19 +15,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Server struct{}
+type Server struct {
+	RouterConfig routers.RouterConfig
+	DB           *database.DB
+}
 
-func New() *Server { return &Server{} }
-
-func (s *Server) Start(db *database.DB) {
+func New(db *database.DB) *Server {
 	gin.SetMode("release")
 	gin.ForceConsoleColor()
 
-	router := routers.Routers(container.NewContainer(db))
+	return &Server{DB: db}
+}
 
+func (s *Server) Start() {
 	srv := &http.Server{
 		Addr:      "127.0.0.1:8000", // TODO: Add the address config
-		Handler:   router,
+		Handler:   routers.Routers(container.NewContainer(s.DB), s.RouterConfig),
 		TLSConfig: nil, // TODO: Add the TLS config
 	}
 
@@ -48,4 +52,10 @@ func (s *Server) Start(db *database.DB) {
 		log.Fatal("Server Shutdown:", err)
 	}
 	log.Println("Server exiting")
+}
+
+func (s *Server) AddFileHandler(dir fs.FS) {
+	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
+		http.FileServer(http.FS(dir)).ServeHTTP(c.Writer, c.Request)
+	})
 }

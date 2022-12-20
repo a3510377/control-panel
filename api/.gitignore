@@ -22,3 +22,6 @@ go.work
 
 test/
 *.db
+
+# next.js
+/dist/
