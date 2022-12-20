@@ -3,9 +3,11 @@ package id
 import (
 	"database/sql/driver"
 	"errors"
+	"fmt"
 )
 
 func (f *ID) Scan(src any) error {
+	fmt.Printf("Scan: %T\n", src)
 	switch src := src.(type) {
 	case nil:
 		return nil
@@ -13,12 +15,14 @@ func (f *ID) Scan(src any) error {
 		if src == "" {
 			return nil
 		}
-
 		*f = StringToID(src)
+		return nil
 	case int:
 		*f = ID(src)
+		return nil
 	case int64:
 		*f = ID(src)
+		return nil
 	}
 
 	return errors.New("failed to scan ID")
