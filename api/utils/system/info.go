@@ -3,9 +3,12 @@ package system
 import (
 	"fmt"
 	"math"
+	"os"
 	"time"
 
+	"github.com/a3510377/control-panel/utils/JTime"
 	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
@@ -32,10 +35,18 @@ type CPU struct {
 	MHz      string `json:"mhz"`
 }
 
+type Host struct {
+	Name     string     `json:"name"`
+	Platform string     `json:"platform"`
+	Version  string     `json:"version"`
+	BootTime JTime.Time `json:"boot_time"`
+}
+
 type SystemInfoCache struct {
 	Mem      Mem     `json:"mem"`
 	CPUs     []CPU   `json:"CPUs"`
 	CPUUsage float64 `json:"cpu_usage"`
+	Host     Host    `json:"host"`
 
 	// BootTime uint64 `json "boot_time"`
 	// Platform string `json "platform"`
@@ -43,7 +54,12 @@ type SystemInfoCache struct {
 }
 
 func GetNowSystemInfo() SystemInfoCache {
-	return SystemInfoCache{}
+	return SystemInfoCache{
+		Mem:  GetNowMemInfo(),
+		CPUs: GetNowCPUInfo(),
+		// CPUUsage: ,
+		Host: GetNowHostInfo(),
+	}
 }
 
 // get mem info from system
@@ -71,7 +87,7 @@ func GetNowCPUInfo() []CPU {
 			ID:       info.CPU,
 			Cores:    info.Cores,
 			ModeName: info.ModelName,
-			MHz:      fmt.Sprintf("%f", math.Round(info.Mhz/1e3)),
+			MHz:      fmt.Sprintf("%.1f", math.Round(info.Mhz/1e3)),
 		})
 	}
 
@@ -85,4 +101,17 @@ func GetNowCPUUsage() (total float64) {
 	}
 
 	return math.Round(perPercents[0])
+}
+
+func GetNowHostInfo() Host {
+	timestamp, _ := host.BootTime()
+	platform, _, version, _ := host.PlatformInformation()
+	name, _ := os.Hostname()
+
+	return Host{
+		Name:     name,
+		Platform: platform,
+		Version:  version,
+		BootTime: JTime.Time(time.Unix(int64(timestamp), 0).Local()),
+	}
 }

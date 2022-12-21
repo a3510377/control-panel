@@ -12,9 +12,7 @@ import (
 var webBuild embed.FS
 
 func main() {
-	fmt.Printf("%+v\n", system.GetNowMemInfo())
-	fmt.Printf("%+v\n", system.GetNowCPUInfo())
-	fmt.Printf("%+v\n", system.GetNowCPUUsage())
+	fmt.Printf("%+v\n", system.GetNowSystemInfo())
 	// db, _ := database.NewDB("test.db")
 
 	// for _, instance := range db.GetAutoStartInstances() {
