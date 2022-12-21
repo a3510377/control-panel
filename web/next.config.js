@@ -13,6 +13,10 @@ const nextConfig = {
   },
   future: { webpack5: true },
   trailingSlash: true,
+  swcMinify: true,
+  experimental: {
+    appDir: true,
+  },
   images: {
     unoptimized: true, // FIXME
   },

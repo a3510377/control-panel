@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -52,12 +51,4 @@ func (s *Server) Start() {
 		log.Fatal("Server Shutdown:", err)
 	}
 	log.Println("Server exiting")
-}
-
-func (s *Server) AddFileHandler(dir fs.FS) {
-	fileServer := http.FileServer(http.FS(dir))
-
-	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
-		fileServer.ServeHTTP(c.Writer, c.Request)
-	})
 }
