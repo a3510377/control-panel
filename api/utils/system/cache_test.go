@@ -6,7 +6,7 @@ import (
 )
 
 func TestStartCacheSystemInfo(t *testing.T) {
-	stop := startCacheSystemInfo(time.Second/2, time.Second*1)
+	stop := StartCacheSystemInfo(time.Second/2, time.Second*1)
 	defer stop()
 
 	loop := true
@@ -14,10 +14,10 @@ func TestStartCacheSystemInfo(t *testing.T) {
 	time.AfterFunc(time.Second*5, func() { loop = false })
 
 	for loop {
-		if c := len(systemTimeInfo); c != old {
+		if c := len(SystemTimeInfo); c != old {
 			old = c
 
-			t.Log(systemTimeInfo)
+			t.Log(SystemTimeInfo)
 		}
 	}
 }
