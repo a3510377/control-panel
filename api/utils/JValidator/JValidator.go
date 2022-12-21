@@ -31,16 +31,16 @@ func AddTranslation(key, value string) {
 		return ut.Add(key, value, true)
 	}, func(ut ut.Translator, fe validator.FieldError) string {
 		t, _ := ut.T(key,
-			fe.Field(),
-			fe.Param(),
-			fe.Tag(),
-			fmt.Sprintf("%v", fe.Value()),
-			fe.Kind().String(),
-			fe.Type().String(),
-			fe.Namespace(),
-			fe.StructNamespace(),
-			fe.StructField(),
-			fe.ActualTag(),
+			fe.Field(),                    // {0} Field
+			fe.Param(),                    // {1} Param
+			fe.Tag(),                      // {2} Tag
+			fmt.Sprintf("%v", fe.Value()), // {3} Value
+			fe.Kind().String(),            // {4} Kind
+			fe.Type().String(),            // {5} Type
+			fe.Namespace(),                // {6} Namespace
+			fe.StructNamespace(),          // {7} StructNamespace
+			fe.StructField(),              // {8} StructField
+			fe.ActualTag(),                // {9} ActualTag
 		)
 		return t
 	})

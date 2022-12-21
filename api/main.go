@@ -2,10 +2,9 @@ package main
 
 import (
 	"embed"
-	"io/fs"
+	"fmt"
 
-	"github.com/a3510377/control-panel/database"
-	"github.com/a3510377/control-panel/server"
+	"github.com/a3510377/control-panel/utils/system"
 	_ "github.com/joho/godotenv/autoload" // auto load env
 )
 
@@ -13,22 +12,25 @@ import (
 var webBuild embed.FS
 
 func main() {
-	db, _ := database.NewDB("test.db")
+	fmt.Printf("%+v\n", system.GetNowMemInfo())
+	fmt.Printf("%+v\n", system.GetNowCPUInfo())
+	fmt.Printf("%+v\n", system.GetNowCPUUsage())
+	// db, _ := database.NewDB("test.db")
 
-	for _, instance := range db.GetAutoStartInstances() {
-		go instance.Run()
-	}
+	// for _, instance := range db.GetAutoStartInstances() {
+	// 	go instance.Run()
+	// }
 
-	ser := server.New(db)
+	// ser := server.New(db)
 
-	/* init frontend -- start */
-	dir, err := fs.Sub(webBuild, "dist")
-	if err != nil {
-		panic(err)
-	}
+	// /* init frontend -- start */
+	// dir, err := fs.Sub(webBuild, "dist")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	ser.AddFileHandler(dir)
-	/* init frontend -- end */
+	// ser.AddFileHandler(dir)
+	// /* init frontend -- end */
 
-	ser.Start()
+	// ser.Start()
 }
