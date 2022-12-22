@@ -12,5 +12,5 @@ func PrivateRouter(container *container.Container, app *gin.RouterGroup) {
 	instance.AddHandler(container, app.Group("/instances"))
 
 	// system
-	system.AddHandler(container, app.Group("/system"))
+	system.AddHandler(container, app.Group("/overview"))
 }

@@ -2,6 +2,13 @@ package system
 
 import "time"
 
+const (
+	CacheMax      = time.Minute * 10 // cache 10 minutes
+	CacheInterval = time.Second * 10 // interval
+)
+
+var SystemTimeInfo = []SystemInfo{}
+
 // auto add system info cache
 // return stop system info cache
 func StartCacheSystemInfo(interval, max time.Duration) func() {
@@ -9,14 +16,14 @@ func StartCacheSystemInfo(interval, max time.Duration) func() {
 	ticker := time.NewTicker(interval)
 
 	call := func() {
-		data := SystemInfoCache{}
+		data := GetNowSystemInfo()
 
 		end := len(SystemTimeInfo)
 		if maxLen > end {
 			end++
 		}
 
-		SystemTimeInfo = append([]SystemInfoCache{data}, SystemTimeInfo...)[:end]
+		SystemTimeInfo = append([]SystemInfo{data}, SystemTimeInfo...)[:end]
 	}
 
 	call()

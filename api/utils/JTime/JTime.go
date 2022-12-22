@@ -21,3 +21,5 @@ func (t Time) MarshalJSON() ([]byte, error) {
 
 func (t Time) Time() time.Time { return time.Time(t) }
 func (t Time) String() string  { return t.Time().Format(TimeFormat) }
+
+func Now() Time { return Time(time.Now()) }

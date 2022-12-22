@@ -2,23 +2,22 @@ package system
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/a3510377/control-panel/container"
+	"github.com/a3510377/control-panel/utils/system"
 	"github.com/gin-gonic/gin"
-	"github.com/shirou/gopsutil/v3/mem"
 )
 
 // return stop system info cache
 func AddHandler(container *container.Container, app *gin.RouterGroup) {
-	app.GET("/mem-info", func(c *gin.Context) {
-		v, err := mem.VirtualMemory()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "getting virtual memory failed"})
-			return
+	system.StartCacheSystemInfo(system.CacheInterval, system.CacheMax) // return stop func
+
+	app.GET("/", func(c *gin.Context) {
+		for start := time.Now(); len(system.SystemTimeInfo) > 0 && time.Since(start) < time.Second*3; { // wait for catch
+			c.JSON(http.StatusOK, system.SystemTimeInfo[0])
+
+			break
 		}
-
-		c.JSON(http.StatusOK, v)
 	})
-
-	return
 }

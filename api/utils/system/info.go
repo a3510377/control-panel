@@ -12,13 +12,6 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
-const (
-	CacheMax      = time.Minute * 10 // cache 10 minutes
-	CacheInterval = time.Second * 10 // interval
-)
-
-var SystemTimeInfo = []SystemInfoCache{}
-
 type Mem struct {
 	Total       uint64  `json:"total"`
 	Available   uint64  `json:"available"`
@@ -42,25 +35,26 @@ type Host struct {
 	BootTime JTime.Time `json:"boot_time"`
 }
 
-type SystemInfoCache struct {
-	Mem      Mem     `json:"mem"`
-	CPUs     []CPU   `json:"CPUs"`
-	CPUUsage float64 `json:"cpu_usage"`
-	Host     Host    `json:"host"`
-
-	// BootTime uint64 `json "boot_time"`
-	// Platform string `json "platform"`
-	// Family   string `json "family"`
+type SystemInfo struct {
+	Mem        Mem        `json:"mem"`
+	CPUs       []CPU      `json:"CPUs"`
+	CPUUsage   float64    `json:"cpu_usage"`
+	Host       Host       `json:"host"`
+	SystemTime JTime.Time `json:"system_time"`
 }
 
-func GetNowSystemInfo() SystemInfoCache {
-	return SystemInfoCache{
-		Mem:  GetNowMemInfo(),
-		CPUs: GetNowCPUInfo(),
-		// CPUUsage: ,
-		Host: GetNowHostInfo(),
+func GetNowSystemInfo() SystemInfo {
+	return SystemInfo{
+		Mem:        GetNowMemInfo(),
+		CPUs:       GetNowCPUInfo(),
+		CPUUsage:   GetNowCPUUsage(),
+		Host:       GetNowHostInfo(),
+		SystemTime: GetNowSystemTime(),
 	}
 }
+
+// return system time
+func GetNowSystemTime() JTime.Time { return JTime.Now() }
 
 // get mem info from system
 func GetNowMemInfo() Mem {
