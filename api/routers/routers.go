@@ -1,11 +1,13 @@
 package routers
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/a3510377/control-panel/container"
 	privateRouter "github.com/a3510377/control-panel/routers/private"
 	publicRouter "github.com/a3510377/control-panel/routers/public"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +17,7 @@ type RouterConfig struct {
 
 func Routers(container *container.Container, config RouterConfig) *gin.Engine {
 	router := gin.Default()
+	router.Use(cors.New(corsConfig()))
 
 	router.NoRoute(append([]gin.HandlerFunc{
 		func(c *gin.Context) {
@@ -33,4 +36,20 @@ func Routers(container *container.Container, config RouterConfig) *gin.Engine {
 	publicRouter.PublicRouter(container, api)
 
 	return router
+}
+
+func corsConfig() cors.Config {
+	config := cors.DefaultConfig()
+
+	if gin.Mode() == gin.DebugMode {
+		fmt.Println("-------------------------------------")
+		config.AllowAllOrigins = true
+		config.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
+		config.AllowHeaders = []string{
+			"Authorization", "Content-Type", "Upgrade", "Origin",
+			"Connection", "Accept-Encoding", "Accept-Language", "Host",
+		}
+	}
+
+	return config
 }

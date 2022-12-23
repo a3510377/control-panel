@@ -20,7 +20,11 @@ type Server struct {
 }
 
 func New(db *database.DB) *Server {
-	gin.SetMode("release")
+	mode := gin.ReleaseMode
+	if len(os.Getenv("DEV")) > 0 {
+		mode = gin.DebugMode
+	}
+	gin.SetMode(mode)
 	gin.ForceConsoleColor()
 
 	return &Server{DB: db}

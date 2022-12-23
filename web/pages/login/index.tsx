@@ -1,28 +1,38 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 import style from './index.module.scss';
+import { Login } from '../../api/user';
 
 export default function Home() {
-  const [hasInputName, setHasInputName] = useState(false);
-  const [hasInputPassword, setHasInputPassword] = useState(false);
+  const [hasInputName, setHasInputName] = useState('');
+  const [hasInputPassword, setHasInputPassword] = useState('');
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    const loginData = await Login(hasInputName, hasInputPassword);
+    if (loginData) {
+      setHasInputName('');
+    }
+    console.log(loginData);
+  };
 
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>登入 - 管理系統</title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={style.main}>
         <div>
-          <h1>身份認證</h1>
-          <form className={style.form} action="#" method="POST">
+          <h1>登入</h1>
+          <form action="#" onSubmit={handleSubmit}>
             <div className={style.inputBox}>
               <input
                 className={hasInputName ? 'input' : void 0}
-                onChange={(e) => setHasInputName(!!e.target.value)}
+                onChange={(e) => setHasInputName(e.target.value)}
                 aria-label="用戶名"
                 type="text"
                 id="login_field"
@@ -36,7 +46,7 @@ export default function Home() {
             <div className={style.inputBox}>
               <input
                 className={hasInputPassword ? 'input' : void 0}
-                onChange={(e) => setHasInputPassword(!!e.target.value)}
+                onChange={(e) => setHasInputPassword(e.target.value)}
                 aria-label="密碼"
                 type="password"
                 name="password"
