@@ -52,6 +52,7 @@ export default function Home() {
 
               <input
                 className={classNames(
+                  hasInputName && 'input',
                   checkInputError === 'username' && 'error'
                 )}
                 onChange={updateInput.bind(null, setHasInputName)}
@@ -73,6 +74,7 @@ export default function Home() {
 
               <input
                 className={classNames(
+                  hasInputPassword && 'input',
                   checkInputError === 'password' && 'error'
                 )}
                 onChange={updateInput.bind(null, setHasInputPassword)}

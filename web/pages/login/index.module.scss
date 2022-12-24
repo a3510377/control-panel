@@ -34,12 +34,14 @@
     padding: 10px 15px;
     width: 20em;
 
+    &:focus ~ label,
+    &:global(.input) ~ label {
+      left: 2px;
+      transform: scale(0.75) translateY(-35px);
+    }
+
     &:focus {
       outline: 0;
-      ~ label {
-        left: 2px;
-        transform: scale(0.75) translateY(-35px);
-      }
 
       ~ :global(.select-box) {
         border-color: #1976b2;
@@ -72,10 +74,14 @@
     color: red;
     right: 10px;
 
+    ~ :global(.select-box) {
+      border-color: #cc0033 !important;
+      border-width: 2px;
+    }
+
     + input {
       background-color: #fce4e4;
-      border: 1px solid #cc0033;
-      outline: none;
+      outline: 0;
     }
   }
 
