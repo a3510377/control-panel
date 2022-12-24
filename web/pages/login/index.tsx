@@ -4,8 +4,15 @@ import { ChangeEvent, FormEventHandler, useState } from 'react';
 import style from './index.module.scss';
 import { Login, LoginErrorType, LoginInfo } from '../../api/user';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
 export default function Home() {
+  const router = useRouter();
+  const token = localStorage.getItem('token');
+  if (token) {
+    router.push('/');
+  }
+
   const [hasInputName, setHasInputName] = useState('');
   const [hasInputPassword, setHasInputPassword] = useState('');
   const [checkInputError, setCheckInputError] = useState('');

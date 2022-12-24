@@ -59,15 +59,17 @@ func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 	return &DBAccount{db, data}, nil
 }
 
+// state: `200` OK
+// state: `401` Unauthorized
 func (d *DB) GetUserByJWT(token string) (data *DBAccount, status int) {
 	claims, status := secret.JWT(token).Info()
 	if status != http.StatusOK {
 		return nil, status
 	}
 	if data := d.GetUserByID(claims.ID); data != nil {
-		return data, status
+		return data, http.StatusOK
 	}
-	return nil, http.StatusNotFound
+	return nil, http.StatusUnauthorized
 }
 
 // 通過名稱獲取使用者

@@ -12,7 +12,7 @@ import (
 func (a accountContainer) CheckFromRequest(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
-		c.JSON(400, gin.H{"error": "no token"})
+		c.JSON(401, gin.H{"error": "token error"})
 		c.Abort()
 		return
 	}
@@ -25,6 +25,7 @@ func (a accountContainer) CheckFromRequest(c *gin.Context) {
 		return
 	}
 
+	// 401
 	c.JSON(status, gin.H{"error": "token error"})
 	c.Abort()
 }

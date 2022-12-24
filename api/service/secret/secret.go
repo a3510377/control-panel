@@ -43,7 +43,6 @@ func Create(claims Claims, newTime time.Duration) (token *RefreshToken, status i
 func (j JWT) String() string { return string(j) }
 
 // state: `200` OK
-// state: `400` Bad Request
 // state: `401` Unauthorized
 // data: token info
 func (j JWT) Info() (data *Claims, status int) {
@@ -56,7 +55,7 @@ func (j JWT) Info() (data *Claims, status int) {
 	if token == nil || (token != nil && !token.Valid) {
 		return nil, http.StatusUnauthorized
 	} else if err != nil {
-		return nil, http.StatusBadRequest
+		return nil, http.StatusUnauthorized
 	}
 
 	return claims, http.StatusOK

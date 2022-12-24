@@ -27,3 +27,15 @@ export const Login = (username: string, password: string) => {
       return void 0;
     });
 };
+
+export const GetInfo = (token?: string) => {
+  return RootApi?.get('/account/@me')
+    .then((response): LoginInfo => response.data)
+    .catch((err: AxiosError<LoginErrorType, any>) => {
+      const status = err.request?.status;
+
+      if ([400, 401].includes(status)) return err.response?.data;
+
+      return void 0;
+    });
+};

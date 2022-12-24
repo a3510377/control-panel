@@ -15,3 +15,5 @@ export const RootApi =
       l: navigator.language || localStorage.getItem('lang') || 'zh-TW',
     },
   });
+
+export const GetToken = () => localStorage.getItem('token') || void 0;
