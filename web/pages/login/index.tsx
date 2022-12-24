@@ -49,6 +49,7 @@ export default function Home() {
               {checkInputError === 'username' && (
                 <div className="error-message">{errMessage}</div>
               )}
+
               <input
                 className={classNames(
                   checkInputError === 'username' && 'error'
