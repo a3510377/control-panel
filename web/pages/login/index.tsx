@@ -36,7 +36,7 @@ export default function Home() {
       <Head>
         <title>登入 - 管理系統</title>
       </Head>
-      <main className={style.main}>
+      <div className={style.main}>
         <div>
           <h1>登入</h1>
           <form onSubmit={handleSubmit}>
@@ -91,7 +91,7 @@ export default function Home() {
             </div>
           </form>
         </div>
-      </main>
+      </div>
     </>
   );
 }

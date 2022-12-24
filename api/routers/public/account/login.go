@@ -17,11 +17,13 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 
 		data := container.GetUserByName(user.Username)
 		if data == nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "username not found", "type": "username"})
+			// username not found
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "找不到你的帳號", "type": "username"})
 			return
 		}
 		if !data.CheckPassword(user.Password) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "password error", "type": "password"})
+			// password error
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "密碼錯誤", "type": "password"})
 			return
 		}
 

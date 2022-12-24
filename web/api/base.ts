@@ -11,4 +11,7 @@ export const RootApi =
       Accept: 'application/json',
       Authorization: localStorage.getItem('token') || '',
     },
+    params: {
+      l: navigator.language || localStorage.getItem('lang') || 'zh-TW',
+    },
   });

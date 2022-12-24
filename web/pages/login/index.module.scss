@@ -44,11 +44,11 @@
   :global(.error-message) {
     position: absolute;
     bottom: -22px;
-    font-size: 14pt;
+    font-size: 12pt;
     color: red;
     right: 10px;
 
-    ~ input {
+    + input {
       background-color: #fce4e4;
       border: 1px solid #cc0033;
       outline: none;

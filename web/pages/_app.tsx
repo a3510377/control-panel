@@ -15,16 +15,14 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     return () => clearInterval(loop);
   });
   return (
-    <Component {...pageProps}>
+    <>
       <Head>
         <title>管理系統</title>
-        <style jsx global>{`
-          html {
-            font-family: ${inter.style.fontFamily};
-          }
-        `}</style>
       </Head>
-    </Component>
+      <main className={inter.className}>
+        <Component {...pageProps} />
+      </main>
+    </>
   );
 }
 
