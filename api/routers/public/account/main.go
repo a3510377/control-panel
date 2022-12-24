@@ -8,7 +8,7 @@ import (
 )
 
 func checkNoToken(c *gin.Context) {
-	fmt.Println(c.GetHeader("Authorization"))
+	fmt.Println("Authorization:", c.GetHeader("Authorization"))
 }
 
 func AddHandler(container *container.Container, app *gin.RouterGroup) {

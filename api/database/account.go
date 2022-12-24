@@ -3,7 +3,6 @@ package database
 import (
 	"encoding/json"
 	baseErr "errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -76,7 +75,6 @@ func (d *DB) GetUserByJWT(token string) (data *DBAccount, status int) {
 func (db *DB) GetUserByName(username string) *DBAccount {
 	data := models.Account{}
 	err := db.Where("name = ?", strings.ToLower(username)).First(&data).Error
-	fmt.Println(data)
 	if baseErr.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}

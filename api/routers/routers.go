@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/a3510377/control-panel/container"
@@ -42,7 +41,6 @@ func corsConfig() cors.Config {
 	config := cors.DefaultConfig()
 
 	if gin.Mode() == gin.DebugMode {
-		fmt.Println("-------------------------------------")
 		config.AllowAllOrigins = true
 		config.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
 		config.AllowHeaders = []string{
