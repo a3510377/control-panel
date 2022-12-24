@@ -6,6 +6,8 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 	"sync"
 
@@ -35,15 +37,35 @@ func (w *gzipResponseWriter) Write(b []byte) (int, error) {
 }
 
 func (s *Server) AddFileHandler(dir fs.FS) {
-	fileServer := http.FileServer(http.FS(dir))
+	fs := http.FS(dir)
+	fileServer := http.FileServer(fs)
 
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
+		/* ---------- 404 page ---------- */
+		UPath := c.Request.URL.Path
+		if !strings.HasPrefix(UPath, "/") {
+			UPath = "/" + UPath
+		}
+		UPath = path.Clean(UPath)
+
+		f, err := fs.Open(UPath)
+		if err != nil {
+			if os.IsNotExist(err) {
+				// to 404 page. suffix is `/` is important
+				// if not, will be redirect to `${path}/404` ( is unlimited loop )
+				c.Request.URL.Path = "/404/"
+			}
+		} else {
+			f.Close()
+		}
+
+		/* ---------- gzip ---------- */
 		if !strings.Contains(c.GetHeader("Accept-Encoding"), "gzip") {
 			fileServer.ServeHTTP(c.Writer, c.Request)
 			return
 		}
 
-		/* handle gzip */
+		// support gzip
 		c.Header("Content-Encoding", "gzip")
 
 		gz := gzPool.Get().(*gzip.Writer)
