@@ -64,7 +64,7 @@ export default function Home() {
                 autoFocus
               />
               <label htmlFor="login_field">用戶名</label>
-              <div className="select-box"></div>
+              <div className="select-box" />
             </div>
             <div className={style.inputBox}>
               {checkInputError === 'password' && (
@@ -83,7 +83,7 @@ export default function Home() {
                 autoComplete="current-password"
               />
               <label htmlFor="password">密碼</label>
-              <div className="select-box"></div>
+              <div className="select-box" />
             </div>
             <div className={style.loginBox}>
               <a href="#" className="forgot">
