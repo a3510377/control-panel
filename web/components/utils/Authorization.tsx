@@ -21,6 +21,7 @@ export default function Authorization() {
       return;
     }
 
+    // Redirect to home page if already logged in
     if (localStorage.getItem('token')) {
       GetInfo()
         ?.then(() => Router.asPath === '/login/' && Router.push('/'))
