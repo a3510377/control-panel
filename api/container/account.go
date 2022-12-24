@@ -9,6 +9,8 @@ import (
 // CheckFromRequest check token from request
 // if token is valid, set `user` info to gin.Context
 // get user info from gin.Context: c.MustGet("user").(*database.DBAccount)
+// status: 401 token error
+// status: ..., next
 func (a accountContainer) CheckFromRequest(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {

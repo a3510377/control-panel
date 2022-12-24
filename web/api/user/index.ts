@@ -29,13 +29,7 @@ export const Login = (username: string, password: string) => {
 };
 
 export const GetInfo = (token?: string) => {
-  return RootApi?.get('/account/@me')
-    .then((response): LoginInfo => response.data)
-    .catch((err: AxiosError<LoginErrorType, any>) => {
-      const status = err.request?.status;
-
-      if ([400, 401].includes(status)) return err.response?.data;
-
-      return void 0;
-    });
+  return RootApi?.get('/account/@me', {
+    headers: token ? { Authorization: token } : {},
+  }).then((response): LoginInfo => response.data);
 };

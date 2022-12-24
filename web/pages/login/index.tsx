@@ -1,17 +1,21 @@
 import Head from 'next/head';
-import { ChangeEvent, FormEventHandler, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
 
 import style from './index.module.scss';
-import { Login, LoginErrorType, LoginInfo } from '../../api/user';
+import { GetInfo, Login, LoginErrorType, LoginInfo } from '../../api/user';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 export default function Home() {
   const router = useRouter();
-  const token = localStorage.getItem('token');
-  if (token) {
-    router.push('/');
-  }
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      GetInfo()
+        ?.then(() => router.push('/'))
+        .catch((_) => void 0);
+    }
+  });
 
   const [hasInputName, setHasInputName] = useState('');
   const [hasInputPassword, setHasInputPassword] = useState('');
@@ -23,6 +27,7 @@ export default function Home() {
     const loginData = await Login(hasInputName, hasInputPassword);
     if (loginData?.type === 'success') {
       localStorage.setItem('token', (loginData as LoginInfo).token.token);
+      router.push('/');
     } else {
       const data = loginData as LoginErrorType;
       setErrMessage(data.error);
