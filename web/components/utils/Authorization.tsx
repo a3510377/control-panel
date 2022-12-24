@@ -2,11 +2,7 @@ import Router from 'next/router';
 import { useEffect } from 'react';
 import { GetInfo } from '../../api/user';
 
-const toLogin = () => {
-  console.log('toLogin');
-
-  Router.push('/login', void 0);
-};
+const toLogin = () => Router.push('/login', void 0);
 
 export default function Authorization() {
   useEffect(() => {

@@ -15,8 +15,6 @@ export default function Home() {
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
-    console.log('test');
-
     const loginData = await Login(hasInputName, hasInputPassword);
 
     if (loginData?.type === 'success') {
