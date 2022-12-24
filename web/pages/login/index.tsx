@@ -1,22 +1,12 @@
 import Head from 'next/head';
-import { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 
 import style from './index.module.scss';
-import { GetInfo, Login, LoginErrorType, LoginInfo } from '../../api/user';
+import { Login, LoginErrorType, LoginInfo } from '../../api/user';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      GetInfo()
-        ?.then(() => router.push('/'))
-        .catch((_) => void 0);
-    }
-  });
-
   const [hasInputName, setHasInputName] = useState('');
   const [hasInputPassword, setHasInputPassword] = useState('');
   const [checkInputError, setCheckInputError] = useState('');
@@ -24,12 +14,17 @@ export default function Home() {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+
+    console.log('test');
+
     const loginData = await Login(hasInputName, hasInputPassword);
+
     if (loginData?.type === 'success') {
       localStorage.setItem('token', (loginData as LoginInfo).token.token);
-      router.push('/');
+      Router.push('/');
     } else {
       const data = loginData as LoginErrorType;
+
       setErrMessage(data.error);
       setCheckInputError(data.type);
     }

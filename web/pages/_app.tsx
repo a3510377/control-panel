@@ -6,19 +6,23 @@ import type { AppProps } from 'next/app';
 import { Inter } from '@next/font/google';
 
 import { useEffect } from 'react';
+import Authorization from '../components/utils/Authorization';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const loop = handleDevTools();
+
     return () => clearInterval(loop);
-  });
+  }, []);
+
   return (
     <>
       <Head>
         <title>管理系統</title>
       </Head>
+      <Authorization />
       <main className={inter.className}>
         <Component {...pageProps} />
       </main>
