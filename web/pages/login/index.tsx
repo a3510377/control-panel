@@ -1,38 +1,56 @@
 import Head from 'next/head';
-import { FormEventHandler, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 
 import style from './index.module.scss';
-import { Login } from '../../api/user';
+import { Login, LoginErrorType, LoginInfo } from '../../api/user';
+import classNames from 'classnames';
 
 export default function Home() {
   const [hasInputName, setHasInputName] = useState('');
   const [hasInputPassword, setHasInputPassword] = useState('');
+  const [checkInputError, setCheckInputError] = useState('');
+  const [errMessage, setErrMessage] = useState('');
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     const loginData = await Login(hasInputName, hasInputPassword);
-    if (loginData) {
-      setHasInputName('');
+    if (loginData?.type === 'success') {
+      localStorage.setItem('token', (loginData as LoginInfo).token.token);
+    } else {
+      const data = loginData as LoginErrorType;
+      setErrMessage(data.error);
+      setCheckInputError(data.type);
     }
-    console.log(loginData);
+  };
+
+  const updateInput = (
+    callable: (value: string) => void,
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    setCheckInputError('');
+    callable(e.target.value);
   };
 
   return (
     <>
       <Head>
         <title>登入 - 管理系統</title>
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={style.main}>
         <div>
           <h1>登入</h1>
-          <form action="#" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className={style.inputBox}>
+              {checkInputError === 'username' && (
+                <div className="error-message">{errMessage}</div>
+              )}
+
               <input
-                className={hasInputName ? 'input' : void 0}
-                onChange={(e) => setHasInputName(e.target.value)}
+                className={classNames(
+                  hasInputName && 'input',
+                  checkInputError === 'username' && 'error'
+                )}
+                onChange={updateInput.bind(null, setHasInputName)}
                 aria-label="用戶名"
                 type="text"
                 id="login_field"
@@ -44,9 +62,16 @@ export default function Home() {
               <label htmlFor="login_field">用戶名</label>
             </div>
             <div className={style.inputBox}>
+              {checkInputError === 'password' && (
+                <div className="error-message">{errMessage}</div>
+              )}
+
               <input
-                className={hasInputPassword ? 'input' : void 0}
-                onChange={(e) => setHasInputPassword(e.target.value)}
+                className={classNames(
+                  hasInputPassword && 'input',
+                  checkInputError === 'password' && 'error'
+                )}
+                onChange={updateInput.bind(null, setHasInputPassword)}
                 aria-label="密碼"
                 type="password"
                 name="password"

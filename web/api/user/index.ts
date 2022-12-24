@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { ResponseError, RootApi } from '../base';
 
-interface LoginInfo {
+export interface LoginInfo {
   data: {
     Instances: null; // TODO add instances type
     create_at: string;
@@ -11,9 +11,10 @@ interface LoginInfo {
     nick?: string;
   };
   token: { token: string; expiration: string };
+  type: 'success';
 }
 
-type LoginErrorType = ResponseError & { type: string };
+export type LoginErrorType = ResponseError & { type: string };
 
 export const Login = (username: string, password: string) => {
   return RootApi?.post('/account/login', { username, password })

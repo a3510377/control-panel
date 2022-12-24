@@ -14,10 +14,6 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 		var user database.NewAccountData
 
 		c.ShouldBindJSON(&user)
-		if err := database.CheckJSONData(user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
 
 		data := container.GetUserByName(user.Username)
 		if data == nil {
@@ -34,7 +30,7 @@ func addLoginHandlers(container *container.Container, app *gin.RouterGroup) {
 			c.JSON(status, gin.H{"error": "create token error"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": data.JSON(), "token": token})
+		c.JSON(http.StatusOK, gin.H{"data": data.JSON(), "token": token, "type": "success"})
 	})
 
 	checkToken := app.Use(container.Account.CheckFromRequest)
