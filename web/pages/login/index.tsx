@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
-
-import style from './index.module.scss';
-import { Login, LoginErrorType, LoginInfo } from '../../api/user';
 import Router from 'next/router';
 import { TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import LoginIcon from '@mui/icons-material/Login';
+
+import style from './index.module.scss';
+import { Login, LoginErrorType, LoginInfo } from '../../api/user';
 
 export default function Home() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -80,7 +81,12 @@ export default function Home() {
             <a href="#" className="forgot">
               忘記密碼
             </a>
-            <LoadingButton type="submit" loading={loading} variant="outlined">
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              variant="outlined"
+              startIcon={<LoginIcon />}
+            >
               登入
             </LoadingButton>
           </div>
