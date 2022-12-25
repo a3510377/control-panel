@@ -6,17 +6,19 @@ import {
 } from '@mui/material';
 
 export interface ListLinkItemProps {
-  icon?: React.ReactElement;
   text: string;
   to: string;
+  icon?: React.ReactElement;
+  index?: number;
 }
 
-export function ListLinkItem({ icon, text, to }: ListLinkItemProps) {
+export function ListLinkItem({ icon, text, to, index }: ListLinkItemProps) {
   return (
     <ListItemButton
       LinkComponent={Link}
       href={to}
       style={{ borderRadius: '5px' }}
+      sx={{ pl: index ? index * 4 : void 0 }}
     >
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
       <ListItemText primary={text} />

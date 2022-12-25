@@ -1,25 +1,33 @@
 import Link from 'next/link';
-import { ListLinkItem } from './item';
-export interface Link {
-  name: string;
-  to?: string;
+import { AutoLink } from './group';
 
-  links?: Link[];
+export interface LinkItem {
+  name: string;
+
+  to: string;
 }
+
+export interface LinkGroup {
+  name: string;
+  links: Link[];
+}
+
+export type Link = LinkItem | LinkGroup;
+
 const links: Link[] = [
   {
-    name: 'Home',
+    name: 'a',
     links: [
       { name: 'Home', to: '/' },
       { name: 'About', to: '/about' },
     ],
   },
+  {
+    name: 'b',
+    links: [{ name: 'Home', to: '/' }],
+  },
 ];
 
 export default function Navbar() {
-  return (
-    <>
-      <ListLinkItem text="awa" to="/a" />
-    </>
-  );
+  return <AutoLink items={links} />;
 }
