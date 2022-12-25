@@ -1,4 +1,9 @@
-import { Collapse, ListItemButton, ListItemText } from '@mui/material';
+import {
+  Collapse,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import { useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
@@ -21,6 +26,7 @@ export function AutoLink({
             text={item.name}
             to={item.to}
             index={LIndex}
+            icon={item.icon}
           />
         ) : (
           <ListGroup
@@ -28,6 +34,7 @@ export function AutoLink({
             title={item.name}
             items={item.links}
             index={LIndex}
+            icon={item.icon}
           />
         )
       )}
@@ -39,9 +46,15 @@ export interface ListGroupProps {
   title: string;
   items: Link[];
   index?: number;
+  icon?: React.ReactElement;
 }
 
-export default function ListGroup({ title, items, index }: ListGroupProps) {
+export default function ListGroup({
+  title,
+  items,
+  index,
+  icon,
+}: ListGroupProps) {
   const [open, setOpen] = useState(true);
 
   return (
@@ -50,6 +63,8 @@ export default function ListGroup({ title, items, index }: ListGroupProps) {
         onClick={setOpen.bind(null, !open)}
         sx={{ pl: index ? index * 4 : void 0 }}
       >
+        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+
         <ListItemText primary={title} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>

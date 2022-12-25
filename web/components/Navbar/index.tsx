@@ -1,15 +1,17 @@
 import Link from 'next/link';
 import { AutoLink } from './group';
+import { HTMLAttributes } from 'react';
 
 export interface LinkItem {
   name: string;
-
   to: string;
+  icon?: React.ReactElement;
 }
 
 export interface LinkGroup {
   name: string;
   links: Link[];
+  icon?: React.ReactElement;
 }
 
 export type Link = LinkItem | LinkGroup;
@@ -28,6 +30,10 @@ const links: Link[] = [
   },
 ];
 
-export default function Navbar() {
-  return <AutoLink items={links} />;
+export default function Navbar(props?: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div {...props}>
+      <AutoLink items={links} />
+    </div>
+  );
 }

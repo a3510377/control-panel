@@ -9,7 +9,14 @@ export interface Props {
 export default function Layout({ children }: Props) {
   return (
     <>
-      <Navbar />
+      <Navbar
+        style={{
+          width: '240px',
+          backgroundColor: '#383838',
+          color: 'white',
+          height: '100vh',
+        }}
+      />
       {children}
     </>
   );
