@@ -4,7 +4,7 @@
   flex-direction: column;
   margin: 0 auto;
 
-  > div {
+  form {
     padding: 15px 40px 40px;
     margin: 0 auto;
     border: 1px solid #25a4ff;
@@ -21,82 +21,6 @@
   }
 }
 
-.inputBox {
-  display: flex;
-  flex-direction: column-reverse;
-  position: relative;
-  font-size: 17px;
-  margin-bottom: 40px;
-
-  input {
-    height: 28px;
-    margin: 1px 1px 0 1px;
-    padding: 10px 15px;
-    width: 20em;
-
-    &:focus ~ label,
-    &:global(.input) ~ label {
-      left: 2px;
-      transform: scale(0.75) translateY(-35px);
-    }
-
-    &:focus {
-      outline: 0;
-
-      ~ :global(.select-box) {
-        border-color: #1976b2;
-        border-width: 2px;
-      }
-    }
-  }
-
-  :global(.select-box) {
-    text-align: left;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    top: 0;
-    left: 0;
-    padding: 0 8px;
-    pointer-events: none;
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
-    overflow: hidden;
-    min-width: 0%;
-    border-color: rgba(0, 0, 0, 0.23);
-  }
-
-  :global(.error-message) {
-    position: absolute;
-    bottom: -22px;
-    font-size: 12pt;
-    color: red;
-    right: 10px;
-
-    ~ :global(.select-box) {
-      border-color: #cc0033 !important;
-      border-width: 2px;
-    }
-
-    + input {
-      background-color: #fce4e4;
-      outline: 0;
-    }
-  }
-
-  label {
-    z-index: 1;
-    pointer-events: none;
-    position: absolute;
-    bottom: 12px;
-    padding: 2px 8px;
-    background-color: white;
-    left: 8px;
-    transition: transform 100ms cubic-bezier(0.4, 0, 1, 1), opacity 100ms cubic-bezier(0.4, 0, 1, 1);
-  }
-}
-
 .loginBox {
   display: flex;
   justify-content: space-between;
@@ -108,23 +32,23 @@
     font-size: 14px;
   }
 
-  button {
-    cursor: pointer;
-    font-size: 1em;
-    padding: 8px 28px;
-    border: none;
-    border-radius: 4px;
+  // button {
+  //   cursor: pointer;
+  //   font-size: 1em;
+  //   padding: 8px 28px;
+  //   border: none;
+  //   border-radius: 4px;
 
-    background-color: #1a73e8;
-    color: #fff;
-    position: relative;
+  //   background-color: #1a73e8;
+  //   color: #fff;
+  //   position: relative;
 
-    &:hover {
-      background-color: #1866cc;
-    }
-    &[disabled] {
-      cursor: unset;
-      background-color: #12478c;
-    }
-  }
+  //   &:hover {
+  //     background-color: #1866cc;
+  //   }
+  //   &[disabled] {
+  //     cursor: unset;
+  //     background-color: #12478c;
+  //   }
+  // }
 }

@@ -14,7 +14,7 @@ export interface LoginInfo {
   type: 'success';
 }
 
-export type LoginErrorType = ResponseError & { type: string };
+export type LoginErrorType = ResponseError & { type: 'username' | 'password' };
 
 export const Login = (username: string, password: string) => {
   return RootApi?.post('/account/login', { username, password })
