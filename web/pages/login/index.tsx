@@ -62,6 +62,7 @@ export default function Home() {
             autoFocus
             value={username}
             onChange={updateInputData.bind(null, setUsername)}
+            inputProps={{ tabIndex: 1 }}
           />
           <TextField
             error={errType === 'password'}
@@ -76,9 +77,10 @@ export default function Home() {
             autoComplete="current-password"
             value={password}
             onChange={updateInputData.bind(null, setPassword)}
+            inputProps={{ tabIndex: 2 }}
           />
           <div className={style.loginBox}>
-            <a href="#" className="forgot">
+            <a href="#" className="forgot" tabIndex={4}>
               忘記密碼
             </a>
             <LoadingButton
@@ -86,6 +88,7 @@ export default function Home() {
               loading={loading}
               variant="outlined"
               startIcon={<LoginIcon />}
+              tabIndex={3}
             >
               登入
             </LoadingButton>
