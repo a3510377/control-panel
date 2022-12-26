@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 
 import Navbar from '../Navbar';
+import style from './base.module.scss';
+import { Box } from '@mui/material';
 
 export interface Props {
   children?: ReactNode;
@@ -9,14 +11,15 @@ export interface Props {
 export default function Layout({ children }: Props) {
   return (
     <>
-      <Navbar
-        style={{
-          width: '240px',
-          backgroundColor: '#383838',
-          color: 'white',
-          height: '100vh',
+      <Box
+        className={style.baseNavbar}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
         }}
-      />
+      >
+        <Navbar />
+      </Box>
       {children}
     </>
   );

@@ -23,9 +23,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <title>管理系統</title>
       </Head>
       <Authorization />
-      <main className={inter.className}>
-        <Component {...pageProps} />
-      </main>
+      <style jsx global>{`
+        html {
+          font-family: ${inter.style.fontFamily};
+        }
+      `}</style>
+      <Component {...pageProps} />
     </>
   );
 }
