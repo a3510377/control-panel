@@ -2,6 +2,36 @@ import Link from 'next/link';
 import { AutoLink } from './group';
 import { HTMLAttributes } from 'react';
 
+import SettingsIcon from '@mui/icons-material/Settings';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import { Box, BoxProps } from '@mui/material';
+
+const links: Link[] = [
+  {
+    name: '基礎功能',
+    links: [
+      { name: '數據監控', to: '/', icon: <BarChartIcon /> },
+      { name: '實例管理', to: '/about', icon: <FolderOpenIcon /> },
+      { name: '用戶管理', to: '/about', icon: <ManageAccountsIcon /> },
+    ],
+  },
+  {
+    name: '高級功能',
+    links: [{ name: '設置', to: '/', icon: <SettingsIcon /> }],
+  },
+];
+
+export default function Navbar(props?: HTMLAttributes<BoxProps>) {
+  return (
+    <Box>
+      <h1 style={{ width: '100%', textAlign: 'center' }}>管理系統</h1>
+      <AutoLink items={links} />
+    </Box>
+  );
+}
+
 export interface LinkItem {
   name: string;
   to: string;
@@ -15,25 +45,3 @@ export interface LinkGroup {
 }
 
 export type Link = LinkItem | LinkGroup;
-
-const links: Link[] = [
-  {
-    name: 'a',
-    links: [
-      { name: 'Home', to: '/' },
-      { name: 'About', to: '/about' },
-    ],
-  },
-  {
-    name: 'b',
-    links: [{ name: 'Home', to: '/' }],
-  },
-];
-
-export default function Navbar(props?: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div {...props}>
-      <AutoLink items={links} />
-    </div>
-  );
-}
