@@ -6,6 +6,8 @@ module.exports = (phase) => {
   /** @type {import('next').NextConfig} */
   const nextConfig = {
     env: { API_BASE_URL: isDev ? 'http://localhost:8000' : '' },
+    trailingSlash: true,
+    reactStrictMode: true,
   };
 
   return nextConfig;

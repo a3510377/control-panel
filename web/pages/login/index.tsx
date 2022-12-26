@@ -46,6 +46,7 @@ export default function Home() {
     <>
       <Head>
         <title>登入 - 管理系統</title>
+        <meta name="description" content={void 0} />
       </Head>
       <div className={style.main}>
         <form onSubmit={handleSubmit} ref={formRef}>

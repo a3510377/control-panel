@@ -7,10 +7,12 @@ import { Inter } from '@next/font/google';
 
 import { useEffect } from 'react';
 import Authorization from '../components/utils/Authorization';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   useEffect(() => {
     const loop = handleDevTools();
 
@@ -19,7 +21,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Head>
+      <Head key={router.asPath}>
         <title>管理系統</title>
       </Head>
       <Authorization />
@@ -28,7 +30,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           font-family: ${inter.style.fontFamily};
         }
       `}</style>
-      <Component {...pageProps} />
+      <Component {...pageProps} key={router.asPath} />
     </>
   );
 }
