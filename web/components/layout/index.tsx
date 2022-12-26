@@ -12,15 +12,17 @@ export default function Layout({ children }: Props) {
   return (
     <>
       <Box
+        component="main"
         className={style.baseNavbar}
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          height: '100vh',
         }}
       >
         <Navbar />
+        {children}
       </Box>
-      {children}
     </>
   );
 }
