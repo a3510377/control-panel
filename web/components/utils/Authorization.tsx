@@ -2,7 +2,7 @@ import Router from 'next/router';
 import { useEffect } from 'react';
 import { GetInfo } from '../../api/user';
 
-const toLogin = () => Router.push('/login', void 0);
+const toLogin = () => Router.replace('/login', void 0);
 
 export default function Authorization() {
   let one = 0;
@@ -24,7 +24,7 @@ export default function Authorization() {
     // Redirect to home page if already logged in
     if (localStorage.getItem('token')) {
       GetInfo()
-        ?.then(() => Router.asPath === '/login/' && Router.push('/'))
+        ?.then(() => Router.asPath === '/login/' && Router.replace('/'))
         .catch(toLogin);
     }
   }, [one]);
