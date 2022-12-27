@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
-import { GetInfo } from '../../api/user';
+import { GetInfo } from '@/user';
 
 const toLogin = () => Router.replace('/login', void 0);
 
