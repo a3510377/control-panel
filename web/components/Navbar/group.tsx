@@ -1,12 +1,12 @@
 import {
-  Box,
   Collapse,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 import { ListLinkItem } from './item';
 import { Link } from '.';
@@ -62,12 +62,28 @@ export default function ListGroup({
     <>
       <ListItemButton
         onClick={setOpen.bind(null, !open)}
-        sx={{ pl: index ? index * 4 : void 0 }}
+        sx={{
+          borderRadius: '5px',
+          pl: index ? index * 4 : void 0,
+          mb: '10px',
+          '&:hover': {
+            bgcolor: '#eef5fb17',
+            svg: { opacity: open ? 1 : 0.5 },
+          },
+        }}
       >
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
 
         <ListItemText primary={title} />
-        {open ? <ExpandLess /> : <ExpandMore />}
+
+        <KeyboardArrowDown
+          sx={{
+            mr: -1,
+            opacity: open ? 0.4 : 1,
+            transform: open ? 'rotate(-180deg)' : 'rotate(0)',
+            transition: '400ms',
+          }}
+        />
       </ListItemButton>
 
       <Collapse in={open} timeout="auto" unmountOnExit>

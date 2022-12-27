@@ -4,8 +4,8 @@ import { HTMLAttributes } from 'react';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AppsIcon from '@mui/icons-material/Apps';
 import { Box, BoxProps } from '@mui/material';
 
 const links: Link[] = [
@@ -13,7 +13,7 @@ const links: Link[] = [
     name: '基礎功能',
     links: [
       { name: '數據監控', to: '/', icon: <BarChartIcon /> },
-      { name: '實例管理', to: '/about', icon: <FolderOpenIcon /> },
+      { name: '實例管理', to: '/about', icon: <AppsIcon /> },
       { name: '用戶管理', to: '/about', icon: <ManageAccountsIcon /> },
     ],
   },
