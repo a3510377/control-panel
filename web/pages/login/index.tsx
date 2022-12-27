@@ -6,7 +6,7 @@ import { LoadingButton } from '@mui/lab';
 import LoginIcon from '@mui/icons-material/Login';
 
 import style from './index.module.scss';
-import { Login, LoginErrorType, LoginInfo } from '../../api/user';
+import { Login, LoginErrorType, LoginInfo } from '@/user';
 
 export default function Home() {
   const formRef = useRef<HTMLFormElement>(null);

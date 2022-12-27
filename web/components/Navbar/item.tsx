@@ -3,6 +3,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  ThemeProvider,
+  createTheme,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 
@@ -17,19 +19,34 @@ export function ListLinkItem({ icon, text, to, index }: ListLinkItemProps) {
   const router = useRouter();
 
   return (
-    <ListItemButton
-      selected={router.asPath === to}
-      LinkComponent={Link}
-      href={to}
-      sx={{
-        borderRadius: '5px',
-        mb: '5px',
-        pl: index ? index * 4 : void 0,
-        '&:hover': { bgcolor: '#eef5fb17' },
-      }}
+    <ThemeProvider
+      theme={createTheme({
+        components: {
+          MuiListItemButton: {
+            styleOverrides: {
+              root: {
+                borderRadius: '5px',
+                marginBottom: '8px',
+                ':hover': { backgroundColor: '#383838ad' },
+                '&.Mui-selected': {
+                  backgroundColor: '#363d4ead',
+                  ':hover': { backgroundColor: '#2b3140d4' },
+                },
+              },
+            },
+          },
+        },
+      })}
     >
-      {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <ListItemText primary={text} />
-    </ListItemButton>
+      <ListItemButton
+        selected={router.asPath === to}
+        LinkComponent={Link}
+        href={to}
+        sx={{ pl: index ? index * 4 : void 0 }}
+      >
+        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+        <ListItemText primary={text} />
+      </ListItemButton>
+    </ThemeProvider>
   );
 }

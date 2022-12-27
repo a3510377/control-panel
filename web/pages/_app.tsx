@@ -6,7 +6,7 @@ import type { AppProps } from 'next/app';
 import { Inter } from '@next/font/google';
 
 import { useEffect } from 'react';
-import Authorization from '../components/utils/Authorization';
+import Authorization from '#/utils/Authorization';
 import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
