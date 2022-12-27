@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import Navbar from '../Navbar';
-import style from './base.module.scss';
 import { Box } from '@mui/material';
 
 export interface Props {
@@ -19,7 +18,14 @@ export default function Layout({ children }: Props) {
           height: '100vh',
         }}
       >
-        <Box className={style.baseNavbar}>
+        <Box
+          sx={{
+            bgcolor: 'rgb(30, 30, 30)',
+            width: '280px',
+            zIndex: 100,
+            color: 'white',
+          }}
+        >
           <Navbar />
         </Box>
         {children}

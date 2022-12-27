@@ -35,6 +35,13 @@ export function ListLinkItem({ icon, text, to, index }: ListLinkItemProps) {
               },
             },
           },
+          MuiListItemIcon: {
+            styleOverrides: {
+              root: {
+                svg: { fill: 'white' },
+              },
+            },
+          },
         },
       })}
     >

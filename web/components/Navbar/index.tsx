@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { AutoLink } from './group';
-import { HTMLAttributes } from 'react';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AppsIcon from '@mui/icons-material/Apps';
-import { Box, BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 
 const links: Link[] = [
   {
@@ -23,11 +22,14 @@ const links: Link[] = [
   },
 ];
 
-export default function Navbar(props?: HTMLAttributes<BoxProps>) {
+export default function Navbar() {
   return (
-    <Box>
-      <h1 style={{ width: '100%', textAlign: 'center' }}>管理系統</h1>
-      <AutoLink items={links} />
+    <Box sx={{ padding: '10px' }}>
+      <Box>
+        <h1 style={{ width: '100%', textAlign: 'center' }}>管理系統</h1>
+        <AutoLink items={links} />
+      </Box>
+      <Box></Box>
     </Box>
   );
 }
