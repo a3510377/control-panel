@@ -1,6 +1,6 @@
 import { Box, Button, Link, TextField } from '@mui/material';
 
-export default function Register() {
+export default function RegisterPage() {
   return (
     <Box component="form" noValidate sx={{ mt: 3 }}>
       <TextField

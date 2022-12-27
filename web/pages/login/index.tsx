@@ -8,7 +8,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import style from './index.module.scss';
 import { Login, LoginErrorType, LoginInfo } from '@/user';
 
-export default function Home() {
+export default function LoginPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
