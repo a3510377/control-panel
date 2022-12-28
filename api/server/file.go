@@ -3,11 +3,9 @@ package server
 
 import (
 	"compress/gzip"
-	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
-	"os"
 	pathLib "path"
 	"regexp"
 	"strings"
@@ -44,7 +42,7 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 	fs := http.FS(dir)
 	fileServer := http.FileServer(fs)
 
-	dynamicRoutes := s.getDynamicRoutes(dir)
+	routes := getRoutes(dir)
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
 		/* ---------- 404 page ---------- */
 		UPath := c.Request.URL.Path
@@ -55,15 +53,12 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 		}
 		UPath = pathLib.Clean(UPath)
 
-		f, err := fs.Open(UPath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				// to 404 page. suffix is `/` is important
-				// if not, will be redirect to `${path}/404` ( is unlimited loop )
-				c.Request.URL.Path = "/404/"
-			}
+		if ok, path := routes.HasIs(UPath); ok {
+			c.Request.URL.Path = path
 		} else {
-			f.Close()
+			// to 404 page. suffix is `/` is important
+			// if not, will be redirect to `${path}/404` ( is unlimited loop )
+			c.Request.URL.Path = "/404/"
 		}
 
 		/* ---------- gzip ---------- */
@@ -85,12 +80,12 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 	})
 }
 
-type T map[string]T
+type route map[string]route
 
-// get dynamic routes from embed files
+// get routes from embed files
 // check path is match `/\[[^/]*\]` ( for next.js export path format )
-func (s *Server) getDynamicRoutes(dir fs.FS) T {
-	dPaths := &T{}
+func getRoutes(dir fs.FS) route {
+	dPaths := &route{}
 
 	fs.WalkDir(dir, ".", func(path string, file fs.DirEntry, _ error) (err error) {
 		if file.IsDir() {
@@ -98,13 +93,13 @@ func (s *Server) getDynamicRoutes(dir fs.FS) T {
 				path = "/" + path
 			}
 			if checkDynamicRoute.MatchString(path) {
-				var t T
+				var t route
 				for i, p := range strings.Split(path, "/") {
 					if i == 0 {
-						(*dPaths)[p] = T{}
+						(*dPaths)[p] = route{}
 						t = (*dPaths)[p]
 					} else {
-						t[p] = T{}
+						t[p] = route{}
 					}
 				}
 			}
@@ -116,22 +111,44 @@ func (s *Server) getDynamicRoutes(dir fs.FS) T {
 	return *dPaths
 }
 
-func (s T) hasIs(dynamicRoutes T, path string) bool {
-	var t T
+// check path is match route
+func (s route) HasIs(path string) (bool, string) {
+	var t route
 
-	for i, p := range strings.Split(path, "/") {
-		fmt.Println(p)
+	resultPath := ""
+	paths := strings.Split(strings.TrimSuffix(path, "/"), "/")
+	for i, p := range paths {
 		if i == 0 {
-			if _, ok := dynamicRoutes[p]; ok {
-				t = dynamicRoutes[p]
+			if _, ok := s[p]; ok {
+				t = s[p]
 				continue
 			} else {
-				break
+				return false, ""
 			}
 		}
 
-	}
-	// strings.HasPrefix(p, "/") || strings.HasSuffix(p, "/")
+		if _, ok := t[p]; ok {
+			resultPath += "/" + p // add current path
+			t = t[p]
 
-	return true
+			if i == len(paths)-1 {
+				return true, resultPath
+			}
+		}
+
+		for key := range t {
+			resultPath += "/" + p // add current path
+
+			if strings.HasPrefix(key, "[") && strings.HasSuffix(key, "]") {
+				if i == len(paths)-1 {
+					return true, resultPath
+				}
+				continue
+			}
+
+			return false, ""
+		}
+	}
+
+	return false, ""
 }

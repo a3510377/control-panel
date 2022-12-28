@@ -15,9 +15,8 @@ import (
 )
 
 type Server struct {
-	RouterConfig  routers.RouterConfig
-	DB            *database.DB
-	dynamicRoutes T
+	RouterConfig routers.RouterConfig
+	DB           *database.DB
 }
 
 func New(db *database.DB) *Server {
