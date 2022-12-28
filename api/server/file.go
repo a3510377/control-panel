@@ -45,16 +45,12 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 	routes := getRoutes(dir)
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
 		/* ---------- 404 page ---------- */
-		UPath := c.Request.URL.Path
-
-		// if path is not end with `${path}`,fix to `${path}/`
-		if !strings.HasPrefix(UPath, "/") {
-			UPath = "/" + UPath
-		}
-		UPath = pathLib.Clean(UPath)
+		UPath := pathLib.Clean(c.Request.URL.Path)
 
 		if ok, path := routes.HasIs(UPath); ok {
-			c.Request.URL.Path = path
+			// suffix is `/` is important
+			// if not, will be redirect to `${path}/${path}` ( is unlimited loop )
+			c.Request.URL.Path = path + "/"
 		} else {
 			// to 404 page. suffix is `/` is important
 			// if not, will be redirect to `${path}/404` ( is unlimited loop )
@@ -116,10 +112,11 @@ func (s route) HasIs(path string) (bool, string) {
 	var t route
 
 	resultPath := ""
-	paths := strings.Split(strings.TrimSuffix(path, "/"), "/")
+	paths := strings.Split(strings.TrimSuffix(strings.TrimPrefix(path, "/"), "/"), "/")
 	for i, p := range paths {
 		if i == 0 {
 			if _, ok := s[p]; ok {
+				resultPath += "/" + p // add current path
 				t = s[p]
 				continue
 			} else {
@@ -137,12 +134,12 @@ func (s route) HasIs(path string) (bool, string) {
 		}
 
 		for key := range t {
-			resultPath += "/" + p // add current path
-
 			if strings.HasPrefix(key, "[") && strings.HasSuffix(key, "]") {
+				resultPath += "/" + key // add current path
 				if i == len(paths)-1 {
 					return true, resultPath
 				}
+
 				continue
 			}
 
@@ -150,5 +147,9 @@ func (s route) HasIs(path string) (bool, string) {
 		}
 	}
 
-	return false, ""
+	if resultPath != "" {
+		return true, resultPath
+	} else {
+		return false, ""
+	}
 }
