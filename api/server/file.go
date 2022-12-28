@@ -3,16 +3,20 @@ package server
 
 import (
 	"compress/gzip"
+	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
 	"os"
-	"path"
+	pathLib "path"
+	"regexp"
 	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
 )
+
+var checkDynamicRoute = regexp.MustCompile(`/\[[^/]*\]`)
 
 var gzPool = sync.Pool{
 	New: func() any {
@@ -40,13 +44,16 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 	fs := http.FS(dir)
 	fileServer := http.FileServer(fs)
 
+	dynamicRoutes := s.getDynamicRoutes(dir)
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
 		/* ---------- 404 page ---------- */
 		UPath := c.Request.URL.Path
+
+		// if path is not end with `${path}`,fix to `${path}/`
 		if !strings.HasPrefix(UPath, "/") {
 			UPath = "/" + UPath
 		}
-		UPath = path.Clean(UPath)
+		UPath = pathLib.Clean(UPath)
 
 		f, err := fs.Open(UPath)
 		if err != nil {
@@ -76,4 +83,55 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 
 		fileServer.ServeHTTP(&gzipResponseWriter{ResponseWriter: c.Writer, Writer: gz}, c.Request)
 	})
+}
+
+type T map[string]T
+
+// get dynamic routes from embed files
+// check path is match `/\[[^/]*\]` ( for next.js export path format )
+func (s *Server) getDynamicRoutes(dir fs.FS) T {
+	dPaths := &T{}
+
+	fs.WalkDir(dir, ".", func(path string, file fs.DirEntry, _ error) (err error) {
+		if file.IsDir() {
+			if strings.HasPrefix(path, "/") {
+				path = "/" + path
+			}
+			if checkDynamicRoute.MatchString(path) {
+				var t T
+				for i, p := range strings.Split(path, "/") {
+					if i == 0 {
+						(*dPaths)[p] = T{}
+						t = (*dPaths)[p]
+					} else {
+						t[p] = T{}
+					}
+				}
+			}
+		}
+
+		return // return nil
+	})
+
+	return *dPaths
+}
+
+func (s T) hasIs(dynamicRoutes T, path string) bool {
+	var t T
+
+	for i, p := range strings.Split(path, "/") {
+		fmt.Println(p)
+		if i == 0 {
+			if _, ok := dynamicRoutes[p]; ok {
+				t = dynamicRoutes[p]
+				continue
+			} else {
+				break
+			}
+		}
+
+	}
+	// strings.HasPrefix(p, "/") || strings.HasSuffix(p, "/")
+
+	return true
 }
