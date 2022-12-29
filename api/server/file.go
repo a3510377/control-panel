@@ -76,26 +76,29 @@ func (s *Server) AddFileHandler(dir fs.FS) {
 	})
 }
 
-type route map[string]route
+type route map[string]*route
 
 // get routes from embed files
 // check path is match `/\[[^/]*\]` ( for next.js export path format )
 func getRoutes(dir fs.FS) route {
-	dPaths := &route{}
+	dPaths := route{}
 
 	fs.WalkDir(dir, ".", func(path string, file fs.DirEntry, _ error) (err error) {
 		if file.IsDir() {
-			if strings.HasPrefix(path, "/") {
+			if strings.HasPrefix(path, "/") { // Make sure the regex test is correct
 				path = "/" + path
 			}
 			if checkDynamicRoute.MatchString(path) {
-				var t route
+				var t *route
 				for i, p := range strings.Split(path, "/") {
 					if i == 0 {
-						(*dPaths)[p] = route{}
-						t = (*dPaths)[p]
+						route := &route{}
+						dPaths[p] = route
+						t = route
 					} else {
-						t[p] = route{}
+						r := &route{}
+						(*t)[p] = r
+						t = r
 					}
 				}
 			}
@@ -104,9 +107,10 @@ func getRoutes(dir fs.FS) route {
 		return // return nil
 	})
 
-	return *dPaths
+	return dPaths
 }
 
+// TODO add [...xxx] support
 // check path is match route
 func (s route) HasIs(path string) (bool, string) {
 	var t route
@@ -116,8 +120,8 @@ func (s route) HasIs(path string) (bool, string) {
 	for i, p := range paths {
 		if i == 0 {
 			if _, ok := s[p]; ok {
+				t = *s[p]             // default route map
 				resultPath += "/" + p // add current path
-				t = s[p]
 				continue
 			} else {
 				return false, ""
@@ -126,23 +130,28 @@ func (s route) HasIs(path string) (bool, string) {
 
 		if _, ok := t[p]; ok {
 			resultPath += "/" + p // add current path
-			t = t[p]
+			t = *t[p]
 
 			if i == len(paths)-1 {
 				return true, resultPath
 			}
+			continue
 		}
 
+		check := false
+		// check dynamic route
 		for key := range t {
 			if strings.HasPrefix(key, "[") && strings.HasSuffix(key, "]") {
+				t = *t[key]             // next route map
 				resultPath += "/" + key // add current path
 				if i == len(paths)-1 {
 					return true, resultPath
 				}
-
-				continue
+				check = true
+				break
 			}
-
+		}
+		if !check {
 			return false, ""
 		}
 	}
