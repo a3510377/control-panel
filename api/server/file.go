@@ -4,8 +4,9 @@ package server
 import (
 	"compress/gzip"
 	"embed"
+	"errors"
 	"io"
-	"io/fs"
+	fsLib "io/fs"
 	"net/http"
 	pathLib "path"
 	"regexp"
@@ -14,6 +15,25 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+// HTML contains the given interface object.
+type HTML struct{ Data string }
+
+// Render (HTML) writes data with custom ContentType.
+func (r HTML) Render(w http.ResponseWriter) (err error) {
+	if _, err = w.Write([]byte(r.Data)); err != nil {
+		panic(err)
+	}
+	return
+}
+
+// WriteContentType (JSON) writes JSON ContentType.
+func (r HTML) WriteContentType(w http.ResponseWriter) {
+	header := w.Header()
+	if val := header["Content-Type"]; len(val) == 0 {
+		header["Content-Type"] = []string{"text/html; charset=utf-8"}
+	}
+}
 
 var checkDynamicRoute = regexp.MustCompile(`/\[[^/]*\]`)
 
@@ -40,28 +60,29 @@ func (w *gzipResponseWriter) Write(b []byte) (int, error) {
 }
 
 func (s *Server) AddFileHandler(path embed.FS) {
-	dir, err := fs.Sub(path, "dist")
+	dir, err := fsLib.Sub(path, "dist")
 	if err != nil {
 		panic(err)
 	}
 	fs := http.FS(dir)
 	fileServer := http.FileServer(fs)
+	notFoundPage, err := path.ReadFile("dist/404.html")
 
 	routes := getRoutes(path)
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
 		/* ---------- 404 page ---------- */
 		UPath := pathLib.Clean(c.Request.URL.Path)
 
-		if !strings.HasPrefix(UPath, "/_next") {
-			if ok, path := routes.HasIs(UPath); ok {
-				// suffix is `/` is important
-				// if not, will be redirect to `${path}/${path}` ( is unlimited loop )
-				c.Request.URL.Path = path + "/"
-			} else {
-				// to 404 page. suffix is `/` is important
-				// if not, will be redirect to `${path}/404` ( is unlimited loop )
-				c.Request.URL.Path = "/404/"
-			}
+		if ok, path := routes.HasIs(UPath); !strings.HasPrefix(UPath, "/_next") && ok {
+			// suffix is `/` is important
+			// if not, will be redirect to `${path}/${path}` ( is unlimited loop )
+			c.Request.URL.Path = path + "/"
+		}
+
+		_, err := fs.Open(UPath)
+		if err != nil && errors.Is(err, fsLib.ErrNotExist) {
+			c.Render(http.StatusNotFound, HTML{Data: string(notFoundPage)})
+			return
 		}
 
 		/* ---------- gzip ---------- */
