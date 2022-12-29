@@ -6,6 +6,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AppsIcon from '@mui/icons-material/Apps';
 import { Box } from '@mui/material';
+import User from './user';
 
 const links: Link[] = [
   {
@@ -24,12 +25,22 @@ const links: Link[] = [
 
 export default function Navbar() {
   return (
-    <Box sx={{ padding: '10px' }}>
-      <Box>
+    <Box
+      sx={{
+        bgcolor: 'rgb(30, 30, 30)',
+        width: '280px',
+        zIndex: 100,
+        color: 'white',
+        display: 'flex',
+        'flex-direction': 'column',
+        'justify-content': 'space-between',
+      }}
+    >
+      <Box sx={{ padding: '10px' }}>
         <h1 style={{ width: '100%', textAlign: 'center' }}>管理系統</h1>
         <AutoLink items={links} />
       </Box>
-      <Box></Box>
+      <User />
     </Box>
   );
 }

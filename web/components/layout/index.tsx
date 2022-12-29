@@ -18,16 +18,8 @@ export default function Layout({ children }: Props) {
           height: '100vh',
         }}
       >
-        <Box
-          sx={{
-            bgcolor: 'rgb(30, 30, 30)',
-            width: '280px',
-            zIndex: 100,
-            color: 'white',
-          }}
-        >
-          <Navbar />
-        </Box>
+        <Navbar />
+
         {children}
       </Box>
     </>
