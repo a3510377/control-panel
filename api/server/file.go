@@ -66,7 +66,7 @@ func (s *Server) AddFileHandler(path embed.FS) {
 	}
 	fs := http.FS(dir)
 	fileServer := http.FileServer(fs)
-	notFoundPage, err := path.ReadFile("dist/404.html")
+	notFoundPage, _ := path.ReadFile("dist/404.html")
 
 	routes := getRoutes(path)
 	s.RouterConfig.NoRouteHandlers = append(s.RouterConfig.NoRouteHandlers, func(c *gin.Context) {
