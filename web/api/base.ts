@@ -15,7 +15,11 @@ export const RootApi =
     params: {
       l: navigator.language || localStorage.getItem('lang') || 'zh-TW',
     },
-    transformResponse: (r) => jsonBig().parse(r),
+    // transformResponse: (r) => {
+    //   console.log(r);
+
+    //   return jsonBig().parse(r);
+    // },
   });
 
 export const GetToken = () => localStorage.getItem('token') || void 0;

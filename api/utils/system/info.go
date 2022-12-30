@@ -15,7 +15,7 @@ import (
 type Mem struct {
 	Total       uint64  `json:"total"`
 	Available   uint64  `json:"available"`
-	UsedPercent float64 `json:"used_percent"`
+	UsedPercent float64 `json:"-"`
 
 	STotal     string `json:"str_total"`
 	SAvailable string `json:"str_available"`
@@ -39,6 +39,7 @@ type SystemInfo struct {
 	Time     time.Time `json:"time"`
 	Mem      Mem       `json:"mem"`
 	CPUUsage float64   `json:"cpu_usage"`
+	MEMUsage float64   `json:"mem_usage"`
 }
 
 type SystemBaseInfo struct {
@@ -48,10 +49,12 @@ type SystemBaseInfo struct {
 }
 
 func GetNowSystemInfo() SystemInfo {
+	MemData := GetNowMemInfo()
 	return SystemInfo{
 		Time:     time.Now(),
-		Mem:      GetNowMemInfo(),
+		Mem:      MemData,
 		CPUUsage: GetNowCPUUsage(),
+		MEMUsage: MemData.UsedPercent,
 	}
 }
 

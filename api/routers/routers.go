@@ -2,6 +2,7 @@ package routers
 
 import (
 	"strings"
+	"time"
 
 	"github.com/a3510377/control-panel/container"
 	privateRouter "github.com/a3510377/control-panel/routers/private"
@@ -46,8 +47,19 @@ func corsConfig() cors.Config {
 		config.AllowHeaders = []string{
 			"Authorization", "Content-Type", "Upgrade", "Origin",
 			"Connection", "Accept-Encoding", "Accept-Language", "Host",
+			"Access-Control-Request-Method", "Access-Control-Request-Headers",
+		}
+	} else {
+		config.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
+		config.AllowHeaders = []string{
+			"Authorization", "Content-Type", "Origin",
+			"Connection", "Accept-Encoding", "Accept-Language", "Host",
 		}
 	}
+
+	config.MaxAge = 1 * time.Hour
+	config.AllowCredentials = true
+	config.ExposeHeaders = []string{"Content-Length"}
 
 	return config
 }

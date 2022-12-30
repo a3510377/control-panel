@@ -3,14 +3,14 @@ import { AxiosError } from 'axios';
 
 export type OverviewErrorType = ResponseError;
 
-export const Overview = () => {
-  return RootApi?.get<Overview>('/overview')
+export const Overview = (limit?: number) => {
+  return RootApi?.get<OverviewData[]>('/overview/', { params: { limit } })
     .then((r) => r.data)
     .catch((err: AxiosError<OverviewErrorType>) => err.response?.data);
 };
 
 export const BaseOverview = () => {
-  return RootApi?.get<OverviewBase>('/overview/base')
+  return RootApi?.get<OverviewBaseData>('/overview/base/')
     .then((r) => r.data)
     .catch((err: AxiosError<OverviewErrorType>) => err.response?.data);
 };
@@ -18,17 +18,17 @@ export const BaseOverview = () => {
 export interface MemData {
   Total: BigInteger;
   Available: BigInteger;
-  UsedPercent: number;
   STotal: string;
   SAvailable: string;
 }
 
-export interface Overview {
+export interface OverviewData {
   time: string;
   mem: MemData;
   cpu_usage: number;
+  mem_usage: number;
 }
-export interface OverviewBase {
+export interface OverviewBaseData {
   cpu: number;
   cores: number;
   mode: string;

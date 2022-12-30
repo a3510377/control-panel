@@ -29,7 +29,7 @@ export const Login = (username: string, password: string) => {
 };
 
 export const GetInfo = (token?: string) => {
-  return RootApi?.get<LoginInfo>('/account/@me', {
+  return RootApi?.get<LoginInfo>('/account/@me/', {
     headers: token ? { Authorization: token } : {},
   }).then((response) => response.data);
 };
