@@ -1,19 +1,16 @@
 import { Overview, OverviewData } from '@/system/overview';
-import { Title } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import {
   Area,
   AreaChart,
   CartesianGrid,
-  Label,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
+import Title from './title';
 
 export default function Chart() {
   const [overviewData, setOverviewData] = useState<(OverviewData | void)[]>([]);
@@ -34,25 +31,32 @@ export default function Chart() {
   }, []);
 
   const getValue = () => {
+    const strTime = (date: Date) => {
+      return [
+        date.getHours().toString().padStart(2, '0'),
+        date.getMinutes().toString().padStart(2, '0'),
+        date.getSeconds().toString().padStart(2, '0'),
+      ].join(':');
+    };
+
     return overviewData
       .slice(0, 60)
       .reverse()
       .map((d) => {
         if (d) {
           return {
-            time: new Date(d.time).toLocaleTimeString(),
+            time: strTime(new Date(d.time)),
             cpu_usage: d.cpu_usage,
             mem_usage: d.mem_usage,
           };
         }
-      });
-
-    // .fill(void 0, 60);
+      })
+      .fill(void 0, 60);
   };
 
   return (
     <>
-      {/* <Title>Today</Title> */}
+      <Title>伺服器資源使用狀態</Title>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           width={500}
