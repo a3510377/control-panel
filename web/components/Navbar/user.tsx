@@ -8,12 +8,22 @@ export default function User() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 20px 15px',
+        margin: '0 1em 12px',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar src="" />
-        <Box sx={{ paddingLeft: '8px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          minWidth: '8em',
+          padding: '8px',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          '&:hover': { bgcolor: 'rgba(79,84,92, 0.6)' },
+        }}
+      >
+        <Avatar src="" sx={{ width: '32px', height: '32px' }} />
+        <Box sx={{ paddingLeft: '1em' }}>
           <span>{'test'}</span>
         </Box>
       </Box>

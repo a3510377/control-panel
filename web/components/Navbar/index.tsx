@@ -28,7 +28,7 @@ export default function Navbar() {
     <Box
       sx={{
         bgcolor: 'rgb(30, 30, 30)',
-        width: '280px',
+        width: '260px',
         zIndex: 100,
         color: 'white',
         display: 'flex',
