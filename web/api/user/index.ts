@@ -17,19 +17,19 @@ export interface LoginInfo {
 export type LoginErrorType = ResponseError & { type: 'username' | 'password' };
 
 export const Login = (username: string, password: string) => {
-  return RootApi?.post('/account/login', { username, password })
-    .then((response): LoginInfo => response.data)
-    .catch((err: AxiosError<LoginErrorType, any>) => {
-      const status = err.request?.status;
+  return RootApi?.post<LoginInfo>('/account/login', { username, password })
+    .then((response) => response.data)
+    .catch((err: AxiosError<LoginErrorType>) => {
+      const status = err.response?.status;
 
-      if ([400, 401].includes(status)) return err.response?.data;
+      if (status && [400, 401].includes(status)) return err.response?.data;
 
       return void 0;
     });
 };
 
 export const GetInfo = (token?: string) => {
-  return RootApi?.get('/account/@me', {
+  return RootApi?.get<LoginInfo>('/account/@me', {
     headers: token ? { Authorization: token } : {},
-  }).then((response): LoginInfo => response.data);
+  }).then((response) => response.data);
 };
