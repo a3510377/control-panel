@@ -36,18 +36,28 @@ type Host struct {
 }
 
 type SystemInfo struct {
-	Mem        Mem        `json:"mem"`
+	Time     time.Time `json:"time"`
+	Mem      Mem       `json:"mem"`
+	CPUUsage float64   `json:"cpu_usage"`
+}
+
+type SystemBaseInfo struct {
 	CPUs       []CPU      `json:"CPUs"`
-	CPUUsage   float64    `json:"cpu_usage"`
 	Host       Host       `json:"host"`
 	SystemTime JTime.Time `json:"system_time"`
 }
 
 func GetNowSystemInfo() SystemInfo {
 	return SystemInfo{
-		Mem:        GetNowMemInfo(),
+		Time:     time.Now(),
+		Mem:      GetNowMemInfo(),
+		CPUUsage: GetNowCPUUsage(),
+	}
+}
+
+func GetSystemBaseInfo() SystemBaseInfo {
+	return SystemBaseInfo{
 		CPUs:       GetNowCPUInfo(),
-		CPUUsage:   GetNowCPUUsage(),
 		Host:       GetNowHostInfo(),
 		SystemTime: GetNowSystemTime(),
 	}

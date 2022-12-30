@@ -15,9 +15,13 @@ func AddHandler(container *container.Container, app *gin.RouterGroup) {
 
 	app.GET("/", func(c *gin.Context) {
 		for start := time.Now(); len(system.SystemTimeInfo) > 0 && time.Since(start) < time.Second*3; { // wait for catch
-			c.JSON(http.StatusOK, system.SystemTimeInfo[0])
+			c.JSON(http.StatusOK, system.SystemTimeInfo)
 
 			break
 		}
+	})
+
+	app.GET("/base", func(c *gin.Context) {
+		c.JSON(http.StatusOK, system.GetSystemBaseInfo())
 	})
 }
