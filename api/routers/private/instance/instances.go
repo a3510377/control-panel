@@ -10,7 +10,7 @@ import (
 )
 
 func addInstancesHandlers(container *container.Container, app *gin.RouterGroup) {
-	app.POST("/", func(c *gin.Context) {
+	app.POST("", func(c *gin.Context) {
 		var instances models.Instance
 
 		c.ShouldBindJSON(&instances)

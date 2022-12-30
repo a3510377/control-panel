@@ -11,12 +11,12 @@ import (
 const instanceDataKey = "instance_data"
 
 func addInstanceHandlers(container *container.Container, app *gin.RouterGroup) {
-	app.GET("/", func(c *gin.Context) {
+	app.GET("", func(c *gin.Context) {
 		data := c.MustGet(instanceDataKey).(*database.DBInstance)
 		c.JSON(http.StatusOK, data.Instance)
 	})
 
-	app.PATCH("/", func(c *gin.Context) {
+	app.PATCH("", func(c *gin.Context) {
 		var newInstance map[string]any
 
 		data := c.MustGet(instanceDataKey).(*database.DBInstance)
@@ -25,7 +25,7 @@ func addInstanceHandlers(container *container.Container, app *gin.RouterGroup) {
 		data.Updates(newInstance)
 	})
 
-	app.DELETE("/", func(c *gin.Context) {
+	app.DELETE("", func(c *gin.Context) {
 		data := c.MustGet(instanceDataKey).(*database.DBInstance)
 		if err := data.Delete(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "instance deleted error"})

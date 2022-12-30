@@ -4,13 +4,13 @@ import { AxiosError } from 'axios';
 export type OverviewErrorType = ResponseError;
 
 export const Overview = (limit?: number) => {
-  return RootApi?.get<OverviewData[]>('/overview/', { params: { limit } })
+  return RootApi?.get<OverviewData[]>('/overview', { params: { limit } })
     .then((r) => r.data)
     .catch((err: AxiosError<OverviewErrorType>) => err.response?.data);
 };
 
 export const BaseOverview = () => {
-  return RootApi?.get<OverviewBaseData>('/overview/base/')
+  return RootApi?.get<OverviewBaseData>('/overview/base')
     .then((r) => r.data)
     .catch((err: AxiosError<OverviewErrorType>) => err.response?.data);
 };

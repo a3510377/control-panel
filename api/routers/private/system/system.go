@@ -13,7 +13,7 @@ import (
 func AddHandler(container *container.Container, app *gin.RouterGroup) {
 	system.StartCacheSystemInfo(system.CacheInterval, system.CacheMax) // return stop func
 
-	app.GET("/", func(c *gin.Context) {
+	app.GET("", func(c *gin.Context) {
 		if limitStr := c.Query("limit"); limitStr != "" {
 			limit, err := strconv.Atoi(limitStr)
 			if err != nil {
