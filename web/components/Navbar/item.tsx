@@ -49,6 +49,10 @@ export function ListLinkItem({ icon, text, to, index }: ListLinkItemProps) {
         selected={router.asPath === to}
         LinkComponent={Link}
         href={to}
+        onClick={(e) => {
+          e.preventDefault();
+          router.replace(to);
+        }}
         sx={{ pl: index ? index * 4 : void 0 }}
       >
         {icon && <ListItemIcon>{icon}</ListItemIcon>}

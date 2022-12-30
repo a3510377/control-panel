@@ -3,13 +3,10 @@ import Head from 'next/head';
 import './globals.scss';
 
 import type { AppProps } from 'next/app';
-import { Inter } from '@next/font/google';
 
 import { useEffect } from 'react';
 import Authorization from '#/utils/Authorization';
 import { useRouter } from 'next/router';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -18,18 +15,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
     return () => clearInterval(loop);
   }, []);
-
   return (
     <>
-      <Head key={router.asPath}>
+      <Head>
         <title>管理系統</title>
       </Head>
       <Authorization />
-      <style jsx global>{`
-        html {
-          font-family: ${inter.style.fontFamily};
-        }
-      `}</style>
       <Component {...pageProps} key={router.asPath} />
     </>
   );

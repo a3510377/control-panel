@@ -32,8 +32,8 @@ export default function Navbar() {
         zIndex: 100,
         color: 'white',
         display: 'flex',
-        'flex-direction': 'column',
-        'justify-content': 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
       }}
     >
       <Box sx={{ padding: '10px' }}>
