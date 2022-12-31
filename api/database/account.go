@@ -117,7 +117,7 @@ func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
 	return secret.Create(secret.Claims{
 		ID:       d.ID,
 		Username: d.Name,
-	}, time.Hour*1) // TODO set time from config
+	}, time.Hour*24*7*4) // TODO set time from config
 }
 
 func (d *DBAccount) JSON() (result map[string]any) {
