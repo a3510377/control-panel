@@ -10,12 +10,16 @@ import { useRouter } from 'next/router';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+
+  useEffect(
+    () => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }),
+    [router.asPath]
+  );
+
   useEffect(() => {
     let resizeTimer: NodeJS.Timeout;
 
     addEventListener('resize', () => {
-      console.log(document.body);
-
       document.body?.classList.add('resize-animation-stopper');
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
@@ -26,6 +30,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     const loop = handleDevTools();
     return () => clearInterval(loop);
   }, []);
+
   return (
     <>
       <Head>

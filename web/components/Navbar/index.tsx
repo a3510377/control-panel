@@ -26,6 +26,7 @@ const links: Link[] = [
 export default function Navbar() {
   return (
     <Box
+      className="scrollbar-style"
       sx={{
         bgcolor: '#1e1e1e',
         width: 260,
@@ -35,6 +36,7 @@ export default function Navbar() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        overflow: 'hidden scroll',
       }}
     >
       <Box sx={{ padding: '10px' }}>

@@ -55,7 +55,7 @@ export default function Home() {
       <Head>
         <title>數據監控 - 管理系統</title>
       </Head>
-      <Container sx={{ padding: 24 }}>
+      <Container sx={{ padding: '24px' }}>
         <Grid container spacing={2} width="100%">
           <Grid xs={12}>
             <Paper>
