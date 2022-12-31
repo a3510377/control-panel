@@ -1,10 +1,8 @@
-import { Overview, OverviewData } from '@/system/overview';
-import { useEffect, useId, useState } from 'react';
+import { useId } from 'react';
 import {
   Area,
   AreaChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,

@@ -50,9 +50,14 @@ export default function Home() {
 
   return (
     <Layout>
-      <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid xs={6}>
+      <Container>
+        <Grid container spacing={2} width="100%">
+          <Grid xs={12}>
+            <Paper>
+              <h1>test</h1>
+            </Paper>
+          </Grid>
+          <Grid xs={12} lg={6}>
             <Paper
               sx={{
                 p: 2,
@@ -70,7 +75,7 @@ export default function Home() {
               />
             </Paper>
           </Grid>
-          <Grid xs={6}>
+          <Grid xs={12} lg={6}>
             <Paper
               sx={{
                 p: 2,

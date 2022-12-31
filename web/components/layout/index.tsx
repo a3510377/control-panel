@@ -1,15 +1,23 @@
 import { ReactNode } from 'react';
 
 import Navbar from '../Navbar';
-import { Box } from '@mui/material';
+import {
+  Box,
+  Theme,
+  ThemeOptions,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material';
 
 export interface Props {
   children?: ReactNode;
+  theme?: ThemeOptions;
+  themeData?: Theme;
 }
 
-export default function Layout({ children }: Props) {
+export default function Layout({ children, theme, themeData }: Props) {
   return (
-    <>
+    <ThemeProvider theme={themeData || createTheme(theme)}>
       <Box
         component="main"
         sx={{
@@ -22,6 +30,6 @@ export default function Layout({ children }: Props) {
 
         {children}
       </Box>
-    </>
+    </ThemeProvider>
   );
 }
