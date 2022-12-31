@@ -15,18 +15,25 @@ export default function Authorization() {
       return;
     }
 
-    // Don't redirect to login page if already on login page
-    if (!localStorage.getItem('token') && Router.asPath !== '/login/') {
-      toLogin();
-      return;
-    }
+    const call = () => {
+      // Don't redirect to login page if already on login page
+      if (!localStorage.getItem('token') && Router.asPath !== '/login/') {
+        toLogin();
+        return;
+      }
 
-    // Redirect to home page if already logged in
-    if (localStorage.getItem('token')) {
-      GetInfo()
-        ?.then(() => Router.asPath === '/login/' && Router.replace('/'))
-        .catch(toLogin);
-    }
+      // Redirect to home page if already logged in
+      if (localStorage.getItem('token')) {
+        GetInfo()
+          ?.then(() => Router.asPath === '/login/' && Router.replace('/'))
+          .catch(toLogin);
+      }
+    };
+
+    call();
+    const loop = setInterval(call, 1e3 * 60 * 10); // 10 minutes
+
+    return () => clearInterval(loop);
   }, [one]);
 
   return <></>;

@@ -26,7 +26,6 @@ const links: Link[] = [
 export default function Navbar() {
   return (
     <Box
-      className="scrollbar-style"
       sx={{
         bgcolor: '#1e1e1e',
         width: 260,
@@ -36,10 +35,12 @@ export default function Navbar() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'hidden scroll',
       }}
     >
-      <Box sx={{ padding: '10px' }}>
+      <Box
+        sx={{ padding: '10px', overflow: 'hidden scroll' }}
+        className="scrollbar-style"
+      >
         <h1 style={{ width: '100%', textAlign: 'center' }}>管理系統</h1>
         <AutoLink items={links} />
       </Box>
