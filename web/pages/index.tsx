@@ -1,8 +1,10 @@
 import Chart from '#/home/chart';
+import Title from '#/home/title';
 import Layout from '#/layout';
 import { OverviewData, Overview } from '@/system/overview';
-import { Container, Paper } from '@mui/material';
+import { Box, Container, Paper } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -27,9 +29,9 @@ export default function Home() {
   const getValue = () => {
     const strTime = (date: Date) => {
       return [
-        date.getHours().toString().padStart(2, '0'),
-        date.getMinutes().toString().padStart(2, '0'),
-        date.getSeconds().toString().padStart(2, '0'),
+        date.getHours().toString().padStart(2, '0'), // hours
+        date.getMinutes().toString().padStart(2, '0'), // minutes
+        // date.getSeconds().toString().padStart(2, '0'), // seconds
       ].join(':');
     };
 
@@ -50,11 +52,16 @@ export default function Home() {
 
   return (
     <Layout>
-      <Container>
+      <Head>
+        <title>數據監控 - 管理系統</title>
+      </Head>
+      <Container sx={{ padding: 24 }}>
         <Grid container spacing={2} width="100%">
           <Grid xs={12}>
             <Paper>
-              <h1>test</h1>
+              <Box>
+                <Title>伺服器詳細數據</Title>
+              </Box>
             </Paper>
           </Grid>
           <Grid xs={12} lg={6}>

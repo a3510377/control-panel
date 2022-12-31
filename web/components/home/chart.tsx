@@ -9,18 +9,23 @@ import {
   YAxis,
 } from 'recharts';
 import Title from './title';
+import { Typography } from '@mui/material';
 
 export default function Chart(props: {
   type: string;
   data: any[];
   title?: string;
   color?: string;
+  description?: string;
 }) {
   const color = props.color || '#8884d8';
   const colorID = useId();
+
   return (
     <>
       <Title>{props.title}</Title>
+      <Typography>{props.description}</Typography>
+
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           width={500}
