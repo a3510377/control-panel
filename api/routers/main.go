@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/a3510377/control-panel/container"
-	privateRouter "github.com/a3510377/control-panel/routers/private"
-	publicRouter "github.com/a3510377/control-panel/routers/public"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -29,11 +27,7 @@ func Routers(container *container.Container, config RouterConfig) *gin.Engine {
 		},
 	}, config.NoRouteHandlers...)...)
 
-	api := router.Group("/api")
-	private := api.Group("/", container.Account.CheckFromRequest)
-
-	privateRouter.PrivateRouter(container, private)
-	publicRouter.PublicRouter(container, api)
+	loadRoutes(container, router.Group(""))
 
 	return router
 }

@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"math/rand"
+	"time"
 
 	"github.com/a3510377/control-panel/database"
 	"github.com/a3510377/control-panel/server"
@@ -12,6 +14,8 @@ import (
 var webBuild embed.FS
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	db, _ := database.NewDB("test.db")
 
 	for _, instance := range db.GetAutoStartInstances() {
