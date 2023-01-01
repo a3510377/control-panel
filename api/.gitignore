@@ -25,3 +25,5 @@ test/
 
 # next.js
 /dist/
+
+mycert.pfx
