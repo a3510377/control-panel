@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"syscall"
 
 	"github.com/a3510377/control-panel/service/id"
 )
@@ -35,7 +34,7 @@ func (i *Instance) init() error {
 	cmd := exec.Command(i.ProcessArgs[0], i.ProcessArgs[1:]...)
 	cmd.Dir = i.Root
 	cmd.Env = os.Environ()
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	// cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true} // TODO fix linux build error
 
 	i.Cmd = cmd
 	stdout, err := cmd.StdoutPipe()
