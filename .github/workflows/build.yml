@@ -40,7 +40,7 @@ jobs:
       - name: Build server
         run: |
           cd api
-          go build -v ./api
+          go build -v .
 
       - name: upload Release
         uses: ncipollo/release-action@v1
