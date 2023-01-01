@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tagName:
+        description: 'Release version tag name'
+        required: false
+        default: 'latest'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: init server
+        run: yarn --prod --silent
+
+      - name: Build web
+        run: |
+          cd web
+          yarn build
+
+      - name: Build server
+        run: |
+          cd api
+          go build -v ./api
+
+      - name: upload Release
+        uses: ncipollo/release-action@v1
+        if: ${{ inputs.tagName }}
+        with:
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.tagName }}
+          artifacts: './api/control-panel.exe'
+
+      - name: upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: 'latest'
+          artifacts: './api/control-panel.exe'
+          replacesArtifacts: true
