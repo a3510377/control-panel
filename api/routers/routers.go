@@ -55,6 +55,7 @@ func corsConfig() cors.Config {
 			"Authorization", "Content-Type", "Origin",
 			"Connection", "Accept-Encoding", "Accept-Language", "Host",
 		}
+		config.AllowOrigins = []string{"http://localhost:8080"} // TODO add config.AllowOrigins
 	}
 
 	config.MaxAge = 1 * time.Hour
