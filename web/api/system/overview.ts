@@ -16,10 +16,10 @@ export const BaseOverview = () => {
 };
 
 export interface MemData {
-  Total: BigInteger;
-  Available: BigInteger;
-  STotal: string;
-  SAvailable: string;
+  total: BigInteger;
+  available: BigInteger;
+  str_total: string;
+  str_available: string;
 }
 
 export interface OverviewData {
@@ -29,8 +29,17 @@ export interface OverviewData {
   mem_usage: number;
 }
 export interface OverviewBaseData {
-  cpu: number;
-  cores: number;
-  mode: string;
-  mhz: string;
+  CPUs: {
+    cores: number;
+    cpu: number;
+    mhz: string;
+    mode: string;
+  }[];
+  host: {
+    boot_time: string;
+    name: string;
+    platform: string;
+    version: string;
+  };
+  system_time: string;
 }

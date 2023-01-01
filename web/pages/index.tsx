@@ -1,8 +1,8 @@
 import Chart from '#/home/chart';
-import Title from '#/home/title';
+import Info from '#/home/info';
 import Layout from '#/layout';
 import { OverviewData, Overview } from '@/system/overview';
-import { Box, Container, Paper } from '@mui/material';
+import { Paper } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -51,56 +51,54 @@ export default function Home() {
   };
 
   return (
-    <Layout>
+    <Layout rootStyle={{ padding: '24px' }}>
       <Head>
         <title>數據監控 - 管理系統</title>
       </Head>
-      <Container sx={{ padding: '24px' }}>
-        <Grid container spacing={2} width="100%">
-          <Grid xs={12}>
-            <Paper>
-              <Box>
-                <Title>伺服器詳細數據</Title>
-              </Box>
-            </Paper>
-          </Grid>
-          <Grid xs={12} lg={6}>
-            <Paper
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                height: 240,
-                color: 'white',
-              }}
-            >
-              <Chart
-                title="CPU 使用率"
-                type={'cpu_usage'}
-                data={getValue()}
-                color="#56b0f5"
-              />
-            </Paper>
-          </Grid>
-          <Grid xs={12} lg={6}>
-            <Paper
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                height: 240,
-              }}
-            >
-              <Chart
-                title="內存使用率"
-                type={'mem_usage'}
-                data={getValue()}
-                color="#8884d8"
-              />
-            </Paper>
-          </Grid>
+      <Grid container spacing={2} width="100%">
+        <Grid xs={12}>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Info data={overviewData} />
+          </Paper>
         </Grid>
-      </Container>
+        <Grid xs={12} lg={6}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              height: 240,
+              color: 'white',
+            }}
+          >
+            <Chart
+              title="CPU 使用率"
+              type="cpu_usage"
+              data={getValue()}
+              color="#56b0f5"
+            />
+          </Paper>
+        </Grid>
+        <Grid xs={12} lg={6}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              height: 240,
+            }}
+          >
+            <Chart
+              title="內存使用率"
+              type="mem_usage"
+              data={getValue()}
+              color="#8884d8"
+            />
+          </Paper>
+        </Grid>
+      </Grid>
     </Layout>
   );
 }

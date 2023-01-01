@@ -13,6 +13,7 @@ export default function Title(props: TitleProps) {
       component="h2"
       variant="h6"
       color={props.color || 'primary'}
+      fontWeight="bold"
       gutterBottom
     >
       {props.children}
