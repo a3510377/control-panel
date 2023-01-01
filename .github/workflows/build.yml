@@ -44,8 +44,7 @@ jobs:
       - name: Build linux amd64
         run: |
           cd api
-          CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
-            go build -o ../build/control-panel-linux-amd64 .
+          go build -o ../build/control-panel-linux-amd64 .
 
       - name: Build darwin amd64
         run: |
