@@ -46,11 +46,11 @@ jobs:
           cd api
           go build -o ../build/control-panel-linux-amd64 .
 
-      - name: Build darwin amd64
-        run: |
-          cd api
-          GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
-            go build -o ../build/control-panel-darwin-amd64 .
+      # - name: Build darwin amd64
+      #   run: |
+      #     cd api
+      #     GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
+      #       go build -o ../build/control-panel-darwin-amd64 .
 
       - name: Build windows amd64
         run: |
