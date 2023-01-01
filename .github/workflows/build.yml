@@ -33,7 +33,8 @@ jobs:
       - name: Build web
         run: |
           cd web
-          yarn --prod --silent
+          yarn install
+          # --prod --silent
           yarn export
 
       - name: Build server
