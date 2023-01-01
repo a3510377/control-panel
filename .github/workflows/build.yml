@@ -41,17 +41,14 @@ jobs:
           sudo apt-get install gcc-mingw-w64
           mkdir -p build
 
-      - name: Build windows amd64
-        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1\
-          CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
-          go build -o build/control-panel-windows-amd64.exe ./api
-
       - name: Build linux amd64
         run: go build -o build/control-panel-linux-amd64 ./api
 
       - name: Build darwin amd64
-        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1\
-          go build -o build/control-panel-darwin-amd64 ./api
+        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -o build/control-panel-darwin-amd64 ./api
+
+      - name: Build windows amd64
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go build -o build/control-panel-windows-amd64.exe ./api
 
       - name: upload Release
         uses: ncipollo/release-action@v1
