@@ -44,18 +44,20 @@ jobs:
       - name: Build linux amd64
         run: |
           cd api
-          go build -o ../build/control-panel-linux-amd64 .
+          CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
+            go build -o ../build/control-panel-linux-amd64 .
 
       - name: Build darwin amd64
         run: |
           cd api
-          GOOS=darwin GOARCH=amd64 go build -o ../build/control-panel-darwin-amd64 .
+          GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
+            go build -o ../build/control-panel-darwin-amd64 .
 
       - name: Build windows amd64
         run: |
           cd api
-          # CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc 
-          GOOS=windows GOARCH=amd64 go build -o ../build/control-panel-windows-amd64.exe .
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc\
+            go build -o ../build/control-panel-windows-amd64.exe .
 
       - name: upload Release
         uses: ncipollo/release-action@v1
