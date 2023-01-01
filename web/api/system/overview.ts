@@ -20,6 +20,7 @@ export interface MemData {
   available: BigInteger;
   str_total: string;
   str_available: string;
+  str_used: string;
 }
 
 export interface OverviewData {

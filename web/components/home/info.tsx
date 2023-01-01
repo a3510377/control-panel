@@ -40,7 +40,7 @@ export default function Info({ data }: { data: (OverviewData | void)[] }) {
         { label: '內存使用率', data: `${data[0]?.mem_usage}%` },
         {
           label: '內存使用',
-          data: `${data[0]?.mem.str_available}/${data[0]?.mem.str_total}`,
+          data: `${data[0]?.mem.str_used}/${data[0]?.mem.str_total}`,
         },
         {
           label: '伺服器時間',

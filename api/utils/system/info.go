@@ -19,6 +19,7 @@ type Mem struct {
 
 	STotal     string `json:"str_total"`
 	SAvailable string `json:"str_available"`
+	SUsed      string `json:"str_used"`
 }
 
 type CPU struct {
@@ -80,6 +81,7 @@ func GetNowMemInfo() Mem {
 
 		STotal:     BytesString(mem.Total),
 		SAvailable: BytesString(mem.Available),
+		SUsed:      BytesString(mem.Used),
 	}
 }
 
