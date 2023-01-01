@@ -52,7 +52,7 @@ jobs:
           go build -v . -o ../build/control-panel
 
       - name: upload Release
-        uses: ncipollo/release-action@v2
+        uses: ncipollo/release-action@v1
         if: ${{ inputs.tagName }}
         with:
           allowUpdates: true
@@ -61,7 +61,7 @@ jobs:
           artifacts: './build/*'
 
       - name: upload Release
-        uses: ncipollo/release-action@v2
+        uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
