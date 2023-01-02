@@ -9,7 +9,8 @@ import (
 )
 
 func loadRoutes(container *container.Container, app *gin.RouterGroup) {
-	account.AddHandler(container, app.Group("/account"))
-	overview.AddHandler(container, app.Group("/overview", container.Account.CheckFromRequest))
-	users.AddHandler(container, app.Group("/users", container.Account.CheckFromRequest))
+	apiRouter := app.Group("/api")
+	account.AddHandler(container, apiRouter.Group("/account"))
+	overview.AddHandler(container, apiRouter.Group("/overview", container.Account.CheckFromRequest))
+	users.AddHandler(container, apiRouter.Group("/users", container.Account.CheckFromRequest))
 }
