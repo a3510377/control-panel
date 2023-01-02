@@ -8,7 +8,6 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -20,7 +19,7 @@ const headCells: {
   nick: { label: '使用者暱稱' },
   id: { label: 'ID' },
   permission: { label: '權限' },
-  createTime: { label: '創建時間' },
+  create_at: { label: '創建時間' },
 };
 
 const cellsValues = Object.keys(headCells) as (keyof User)[];
@@ -29,27 +28,41 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [selects, setSelects] = useState<string[]>([]);
 
-  const handleClick = (id: string) => {
-    return setSelects.bind(
-      null,
-      selects.includes(id)
-        ? selects.filter((id) => id !== id)
-        : [...selects, id]
-    );
-  };
-
   useEffect(() => {
     GetUsers().then((data) => setUsers(data));
   }, []);
 
   return (
-    <Layout rootStyle={{ margin: '1em', width: '100%' }}>
-      <TableContainer component={Paper}>
+    <Layout
+      rootStyle={{
+        padding: '2em',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <TableContainer
+        component={Paper}
+        elevation={3}
+        sx={{ maxWidth: '100em' }}
+      >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
-                <Checkbox />
+                <Checkbox
+                  checked={users.length === selects.length}
+                  indeterminate={
+                    selects.length > 0 && selects.length < users.length
+                  }
+                  onClick={() => {
+                    setSelects(
+                      users.length === selects.length
+                        ? []
+                        : users.map((d) => d.id.toString())
+                    );
+                  }}
+                />
               </TableCell>
 
               {Object.entries(headCells).map(([key, value]) => (
@@ -74,7 +87,15 @@ export default function UsersPage() {
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelect}
-                      onClick={handleClick(user.id.toString())}
+                      onChange={(e) => {
+                        const id = user.id.toString();
+
+                        setSelects(
+                          e.target.checked
+                            ? selects.concat(id)
+                            : selects.filter((item) => item !== id)
+                        );
+                      }}
                     />
                   </TableCell>
 
@@ -89,21 +110,7 @@ export default function UsersPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <TablePagination
-        page={0}
-        count={10}
-        onPageChange={(...data) => {
-          return;
-        }}
-        rowsPerPage={10}
-        // rowsPerPageOptions={[5, 10, 25]}
-        // component="div"
-        // count={10}
-        // rowsPerPage={rowsPerPage}
-        // page={page}
-        // onPageChange={handleChangePage}
-        // onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
+      {/* <TablePagination /> */}
     </Layout>
   );
 }
