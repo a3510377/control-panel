@@ -17,7 +17,7 @@ export interface LoginInfo {
 export type LoginErrorType = ResponseError & { type: 'username' | 'password' };
 
 export const Login = (username: string, password: string) => {
-  return RootApi?.post<LoginInfo>('/account/login', { username, password })
+  return RootApi.post<LoginInfo>('/account/login', { username, password })
     .then((response) => response.data)
     .catch((err: AxiosError<LoginErrorType>) => {
       const status = err.response?.status;
@@ -29,7 +29,7 @@ export const Login = (username: string, password: string) => {
 };
 
 export const GetInfo = (token?: string) => {
-  return RootApi?.get<LoginInfo>('/account/@me', {
+  return RootApi.get<LoginInfo>('/users/@me', {
     headers: token ? { Authorization: token } : {},
   }).then((response) => response.data);
 };

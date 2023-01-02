@@ -37,6 +37,22 @@ func HasPassword(password string, hash []byte) bool {
 	return err == nil
 }
 
+// TODO add limit
+func (db *DB) GetUsers() ([]*DBAccount, error) {
+	data := []models.Account{}
+	users := []*DBAccount{}
+
+	if err := db.PreloadAll().Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	for _, user := range data {
+		users = append(users, &DBAccount{db, user})
+	}
+
+	return users, nil
+}
+
 // 創建一個新的使用者
 func (db *DB) CreateNewUser(user NewAccountData) (*DBAccount, error) {
 	if err := CheckJSONData(user); err != nil {
@@ -122,6 +138,9 @@ func (d *DBAccount) CreateNewJWT() (*secret.RefreshToken, int) {
 
 func (d *DBAccount) JSON() (result map[string]any) {
 	d.GetNow()
+	if d.Account.Instances == nil {
+		d.Account.Instances = []*models.Instance{}
+	}
 	b, _ := json.Marshal(&d.Account)
 	_ = json.Unmarshal(b, &result)
 	return
