@@ -13,7 +13,7 @@ const queryUserKey = "query-user"
 
 // `/:id`
 func infoByID(container *container.Container, app *gin.RouterGroup) {
-	checkToken := app.Group("/:id", container.Account.CheckFromRequest, func(c *gin.Context) {
+	dynamicID := app.Group("/:id", func(c *gin.Context) {
 		id := id.StringToID(c.Param("id"))
 		if id == -1 {
 			c.JSON(http.StatusNotFound, gin.H{"error": "not fond"})
@@ -26,7 +26,7 @@ func infoByID(container *container.Container, app *gin.RouterGroup) {
 		c.Next()
 	})
 
-	checkToken.GET("", func(c *gin.Context) {
+	dynamicID.GET("", func(c *gin.Context) {
 		data := c.MustGet(queryUserKey).(*database.DBAccount)
 		if data == nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "not fond"})
