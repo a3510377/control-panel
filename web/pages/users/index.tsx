@@ -1,13 +1,17 @@
 import Layout from '#/layout';
 import { GetUsers, User } from '@/user/user';
+import { Search as SearchIcon } from '@mui/icons-material';
 import {
+  Box,
   Checkbox,
+  InputBase,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -46,6 +50,27 @@ export default function UsersPage() {
         elevation={3}
         sx={{ maxWidth: '100em' }}
       >
+        <Box>
+          <Box
+            sx={{
+              display: 'inline-block',
+              bgcolor: '#4e4e4e38',
+              borderRadius: 2,
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '2px 8px',
+              }}
+            >
+              <SearchIcon sx={{ height: '100%', pointerEvents: 'none' }} />
+              <InputBase placeholder="Search..." sx={{ padding: '0 8px' }} />
+            </Box>
+          </Box>
+        </Box>
         <Table>
           <TableHead>
             <TableRow>
@@ -110,7 +135,6 @@ export default function UsersPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <TablePagination /> */}
     </Layout>
   );
 }
