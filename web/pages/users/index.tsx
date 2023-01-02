@@ -8,6 +8,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -15,9 +16,9 @@ import { useEffect, useState } from 'react';
 const headCells: {
   [key: string]: { label: string };
 } = {
-  id: { label: 'ID' },
   name: { label: '使用者名稱' },
   nick: { label: '使用者暱稱' },
+  id: { label: 'ID' },
   permission: { label: '權限' },
   createTime: { label: '創建時間' },
 };
@@ -26,6 +27,16 @@ const cellsValues = Object.keys(headCells) as (keyof User)[];
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [selects, setSelects] = useState<string[]>([]);
+
+  const handleClick = (id: string) => {
+    return setSelects.bind(
+      null,
+      selects.includes(id)
+        ? selects.filter((id) => id !== id)
+        : [...selects, id]
+    );
+  };
 
   useEffect(() => {
     GetUsers().then((data) => setUsers(data));
@@ -33,37 +44,66 @@ export default function UsersPage() {
 
   return (
     <Layout rootStyle={{ margin: '1em', width: '100%' }}>
-      <TableContainer component={Paper}></TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox />
-            </TableCell>
-
-            {Object.entries(headCells).map(([key, value]) => (
-              <TableCell key={key} align="center">
-                {value.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id.toString()}>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
 
-              {cellsValues.map((key) => (
+              {Object.entries(headCells).map(([key, value]) => (
                 <TableCell key={key} align="center">
-                  {user[key]?.toString()}
+                  {value.label}
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {users.map((user) => {
+              const isSelect = selects.includes(user.id.toString());
+
+              return (
+                <TableRow
+                  hover
+                  key={user.id.toString()}
+                  role="checkbox"
+                  selected={isSelect}
+                  tabIndex={-1}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={isSelect}
+                      onClick={handleClick(user.id.toString())}
+                    />
+                  </TableCell>
+
+                  {cellsValues.map((key) => (
+                    <TableCell key={key} align="center">
+                      {user[key]?.toString()}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* <TablePagination
+        page={0}
+        count={10}
+        onPageChange={(...data) => {
+          return;
+        }}
+        rowsPerPage={10}
+        // rowsPerPageOptions={[5, 10, 25]}
+        // component="div"
+        // count={10}
+        // rowsPerPage={rowsPerPage}
+        // page={page}
+        // onPageChange={handleChangePage}
+        // onRowsPerPageChange={handleChangeRowsPerPage}
+      /> */}
     </Layout>
   );
 }
