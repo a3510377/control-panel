@@ -1,17 +1,13 @@
 import Layout from '#/layout';
 import { GetUsers, User } from '@/user/user';
-import { Search as SearchIcon } from '@mui/icons-material';
 import {
-  Box,
   Checkbox,
-  InputBase,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -50,27 +46,6 @@ export default function UsersPage() {
         elevation={3}
         sx={{ maxWidth: '100em' }}
       >
-        <Box>
-          <Box
-            sx={{
-              display: 'inline-block',
-              bgcolor: '#4e4e4e38',
-              borderRadius: 2,
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '2px 8px',
-              }}
-            >
-              <SearchIcon sx={{ height: '100%', pointerEvents: 'none' }} />
-              <InputBase placeholder="Search..." sx={{ padding: '0 8px' }} />
-            </Box>
-          </Box>
-        </Box>
         <Table>
           <TableHead>
             <TableRow>
@@ -91,7 +66,7 @@ export default function UsersPage() {
               </TableCell>
 
               {Object.entries(headCells).map(([key, value]) => (
-                <TableCell key={key} align="center">
+                <TableCell key={`table-table-${key}`} align="center">
                   {value.label}
                 </TableCell>
               ))}
@@ -104,7 +79,7 @@ export default function UsersPage() {
               return (
                 <TableRow
                   hover
-                  key={user.id.toString()}
+                  key={`table-body-${user.id.toString()}`}
                   role="checkbox"
                   selected={isSelect}
                   tabIndex={-1}
@@ -125,7 +100,7 @@ export default function UsersPage() {
                   </TableCell>
 
                   {cellsValues.map((key) => (
-                    <TableCell key={key} align="center">
+                    <TableCell key={`body-table-cell-${key}`} align="center">
                       {user[key]?.toString()}
                     </TableCell>
                   ))}
