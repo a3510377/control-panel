@@ -83,6 +83,19 @@ export default function UsersPage() {
                   role="checkbox"
                   selected={isSelect}
                   tabIndex={-1}
+                  onClick={(e) => {
+                    const id = user.id.toString();
+
+                    if (e.ctrlKey) {
+                      e.preventDefault();
+
+                      setSelects(
+                        selects.includes(id)
+                          ? selects.filter((item) => item !== id)
+                          : selects.concat(id)
+                      );
+                    }
+                  }}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
