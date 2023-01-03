@@ -1,12 +1,19 @@
 import Head from 'next/head';
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import Router from 'next/router';
-import { TextField } from '@mui/material';
+import {
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  TextField,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import LoginIcon from '@mui/icons-material/Login';
 
 import style from './index.module.scss';
 import { Login, LoginErrorType, LoginInfo } from '@/user';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function LoginPage() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -15,6 +22,8 @@ export default function LoginPage() {
   const [errMessage, setErrMessage] = useState('');
   const [errType, setErrType] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -73,12 +82,24 @@ export default function LoginPage() {
             fullWidth
             name="password"
             label="密碼"
-            type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={updateInputData.bind(null, setPassword)}
             inputProps={{ tabIndex: 2 }}
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <div className={style.loginBox}>
             <a href="#" className="forgot" tabIndex={4}>
