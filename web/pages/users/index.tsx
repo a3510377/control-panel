@@ -3,6 +3,7 @@ import { GetUsers, User } from '@/user/user';
 import {
   Box,
   Checkbox,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -12,6 +13,7 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useEffect, useState } from 'react';
 
 const headCells: {
@@ -30,8 +32,9 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [selects, setSelects] = useState<string[]>([]);
 
+  const getUsers = () => GetUsers().then((data) => setUsers(data));
   useEffect(() => {
-    GetUsers().then((data) => setUsers(data));
+    getUsers();
   }, []);
 
   return (
@@ -51,7 +54,7 @@ export default function UsersPage() {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
             padding: '0 1em',
           }}
@@ -66,8 +69,11 @@ export default function UsersPage() {
             // onChange={updateInputData.bind(null, setPassword)}
             inputProps={{ tabIndex: 1 }}
             type="search"
-            sx={{ width: '120px' }}
+            sx={{ width: '240px' }}
           />
+          <IconButton sx={{ marginLeft: '10px' }} onClick={getUsers}>
+            <AutorenewIcon />
+          </IconButton>
         </Box>
         <Table>
           <TableHead>
