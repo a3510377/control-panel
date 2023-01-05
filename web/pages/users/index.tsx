@@ -1,6 +1,7 @@
 import Layout from '#/layout';
 import { GetUsers, User } from '@/user/user';
 import {
+  Box,
   Checkbox,
   Paper,
   Table,
@@ -9,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -46,6 +48,27 @@ export default function UsersPage() {
         elevation={3}
         sx={{ maxWidth: '100em' }}
       >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0 1em',
+          }}
+        >
+          <TextField
+            helperText={''}
+            margin="normal"
+            fullWidth
+            name="search"
+            label="搜尋"
+            id="search"
+            // onChange={updateInputData.bind(null, setPassword)}
+            inputProps={{ tabIndex: 1 }}
+            type="search"
+            sx={{ width: '120px' }}
+          />
+        </Box>
         <Table>
           <TableHead>
             <TableRow>
