@@ -12,6 +12,7 @@ import (
 // `/`
 func userInfo(container *container.Container, app *gin.RouterGroup) {
 	app.GET("", func(c *gin.Context) {
+		// TODo
 		page, _ := strconv.Atoi(c.Query("page"))
 		pageSize, _ := strconv.Atoi(c.Query("page_size"))
 		if pageSize > 100 {
