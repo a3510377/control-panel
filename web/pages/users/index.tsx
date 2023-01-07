@@ -14,6 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 
 const headCells: {
@@ -31,6 +32,8 @@ const cellsValues = Object.keys(headCells) as (keyof User)[];
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [selects, setSelects] = useState<string[]>([]);
+  const [searching, setSearching] = useState<boolean>(false);
+  const [searchStr, setSearchStr] = useState<string>();
 
   const getUsers = () => GetUsers().then((data) => setUsers(data));
   useEffect(() => {
@@ -60,19 +63,21 @@ export default function UsersPage() {
           }}
         >
           <TextField
-            helperText={''}
             margin="normal"
             fullWidth
             name="search"
             label="搜尋"
             id="search"
-            // onChange={updateInputData.bind(null, setPassword)}
+            onBlur={() => setSearching(false)}
+            onFocus={() => setSearching(true)}
+            onChange={(e) => setSearchStr(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && getUsers()}
             inputProps={{ tabIndex: 1 }}
             type="search"
             sx={{ width: '240px' }}
           />
           <IconButton sx={{ marginLeft: '10px' }} onClick={getUsers}>
-            <AutorenewIcon />
+            {searching || searchStr ? <SearchIcon /> : <AutorenewIcon />}
           </IconButton>
         </Box>
         <Table>
