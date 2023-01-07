@@ -17,6 +17,8 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 
+import Operate from './operate';
+
 const headCells: {
   [key: string]: { label: string };
 } = {
@@ -56,29 +58,33 @@ export default function UsersPage() {
       >
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             padding: '0 1em',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            '&,>div': { display: 'flex' },
           }}
         >
-          <TextField
-            margin="normal"
-            fullWidth
-            name="search"
-            label="搜尋"
-            id="search"
-            onBlur={() => setSearching(false)}
-            onFocus={() => setSearching(true)}
-            onChange={(e) => setSearchStr(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && getUsers()}
-            inputProps={{ tabIndex: 1 }}
-            type="search"
-            sx={{ width: '240px' }}
-          />
-          <IconButton sx={{ marginLeft: '10px' }} onClick={getUsers}>
-            {searching || searchStr ? <SearchIcon /> : <AutorenewIcon />}
-          </IconButton>
+          <Box sx={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TextField
+              margin="normal"
+              fullWidth
+              name="search"
+              label="搜尋"
+              id="search"
+              value={searchStr}
+              onBlur={() => setSearching(false)}
+              onFocus={() => setSearching(true)}
+              onChange={(e) => setSearchStr(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && getUsers()}
+              inputProps={{ tabIndex: 1 }}
+              type="search"
+              sx={{ width: '240px' }}
+            />
+            <IconButton sx={{ marginLeft: '10px' }} onClick={getUsers}>
+              {searching || searchStr ? <SearchIcon /> : <AutorenewIcon />}
+            </IconButton>
+          </Box>
+          <Operate />
         </Box>
         <Table>
           <TableHead>
